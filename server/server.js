@@ -10,7 +10,7 @@ const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 8080;
 
-server.use(
+app.use(
   session({
     secret: "this is a secret",
     resave: false,
