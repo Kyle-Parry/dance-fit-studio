@@ -1,3 +1,4 @@
+require("dotenv").config();
 // import mysql2 module so that we can talk to the database
 const mysql = require("mysql2");
 
@@ -5,8 +6,20 @@ const mysql = require("mysql2");
 const pool = mysql.createPool({
   host: "localhost",
   user: "root",
-  password: "",
+  password: "123",
   database: "dance_fit_studio",
+});
+// const pool = mysql.createPool({
+//   connectionLimit: 100,
+//   host: process.env.DB_HOST,
+//   user: process.env.DB_USER,
+//   password: process.env.DB_PASS,
+//   database: process.env.DB_NAME,
+// });
+
+pool.getConnection((err, connection) => {
+  if (err) throw err;
+  console.log("Connected as ID: " + connection.threadId);
 });
 
 // this wrapper will allow the use of promise functions
