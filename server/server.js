@@ -46,12 +46,14 @@ app.use(speedLimiter);
 
 const corsOptions = {
   origin: "http://localhost:8080",
+  methods: ["GET", "POST"],
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
-app.use(cors(corsOptions), function (req, res, next) {
-  res.json({ msg: "This is CORS-enabled for only localhost:8080." });
-});
+//not working properly
+// app.use(cors(corsOptions), function (req, res, next) {
+//   res.json({ msg: "This is CORS-enabled for only localhost:8080." });
+// });
 
 app.listen(80, function () {
   console.log("CORS-enabled web server listening on port 80");
@@ -62,6 +64,12 @@ app.use(express.urlencoded({ extended: true }));
 
 const usersRoutes = require("./routes/users.js");
 app.use("/users", usersRoutes);
+
+const classRoutes = require("./routes/classes.js");
+app.use("/classes", classRoutes);
+
+const bookingRoutes = require("./routes/bookings.js");
+app.use("/classes", bookingRoutes);
 
 app.get("/", (req, res) => {
   console.log("Test!");

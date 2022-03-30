@@ -9,6 +9,8 @@ const pool = mysql.createPool({
   password: "123",
   database: "dance_fit_studio",
 });
+
+// not working properly
 // const pool = mysql.createPool({
 //   connectionLimit: 100,
 //   host: process.env.DB_HOST,

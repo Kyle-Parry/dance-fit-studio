@@ -58,7 +58,7 @@ router.post("/update", async (req, res) => {
 });
 
 router.post("/delete", async (req, res) => {
-  const { email } = req.body;
+  const email = req.body;
   if (email) {
     try {
       const result = await db.query(`DELETE FROM users WHERE email = ?`, [
