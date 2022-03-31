@@ -4,20 +4,12 @@ const mysql = require("mysql2");
 
 // create a connection to the database
 const pool = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "123",
-  database: "dance_fit_studio",
+  connectionLimit: 100,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
 });
-
-// not working properly
-// const pool = mysql.createPool({
-//   connectionLimit: 100,
-//   host: process.env.DB_HOST,
-//   user: process.env.DB_USER,
-//   password: process.env.DB_PASS,
-//   database: process.env.DB_NAME,
-// });
 
 pool.getConnection((err, connection) => {
   if (err) throw err;

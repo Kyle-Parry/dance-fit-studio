@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
 router.get("/:classID", async (req, res) => {
   const classID = req.params.classID;
   const results = await db.query(`SELECT * FROM classes WHERE classID = ?`, [
-    email,
+    classID,
   ]);
   res.status(200).json(results);
 });

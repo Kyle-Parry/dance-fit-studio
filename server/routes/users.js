@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   const results = await db.query(`SELECT * FROM users`);
-  res.status(200).send(results);
+  res.status(200).json(results);
 });
 
 router.get("/:email", async (req, res) => {

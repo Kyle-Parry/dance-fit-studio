@@ -10,6 +10,9 @@ const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 8080;
 
+app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use(
   session({
     secret: "this is a secret",
@@ -45,22 +48,41 @@ const speedLimiter = slowDown({
 app.use(speedLimiter);
 
 const corsOptions = {
-  origin: "http://localhost:8080",
-  methods: ["GET", "POST"],
+  origin: "localhost",
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
 //not working properly
-// app.use(cors(corsOptions), function (req, res, next) {
-//   res.json({ msg: "This is CORS-enabled for only localhost:8080." });
-// });
+app.use(cors(corsOptions));
 
 app.listen(80, function () {
   console.log("CORS-enabled web server listening on port 80");
 });
+const logRoute = require("./routes/log.js");
 
-app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: true }));
+// fix after login is setup
+app.use((req, res, next) => {
+  // let userLoggedIn = req.session.user != null
+  // if (userLoggedIn === true) {
+  logRoute.addLog(
+    req.ip,
+    // req.sessionID,
+    req.method,
+    req.url
+    // req.session.user.email,
+    // req.session.user.userType
+  );
+  next();
+  //   } else {
+  // logRoute.addLog(
+  //     req.ip,
+  //     req.sessionID,
+  //     req.method,
+  //     req.url
+  //       )
+  //       next()
+  //   }
+});
 
 const usersRoutes = require("./routes/users.js");
 app.use("/users", usersRoutes);
@@ -69,7 +91,7 @@ const classRoutes = require("./routes/classes.js");
 app.use("/classes", classRoutes);
 
 const bookingRoutes = require("./routes/bookings.js");
-app.use("/classes", bookingRoutes);
+app.use("/bookings", bookingRoutes);
 
 app.get("/", (req, res) => {
   console.log("Test!");

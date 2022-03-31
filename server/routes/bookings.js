@@ -11,10 +11,10 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/:bookingNumber", async (req, res) => {
-  const email = req.params.email;
+  const bookingNumber = req.params.bookingNumber;
   const results = await db.query(
     `SELECT * FROM bookings WHERE bookingNumber = ?`,
-    [email]
+    [bookingNumber]
   );
   res.status(200).json(results);
 });
