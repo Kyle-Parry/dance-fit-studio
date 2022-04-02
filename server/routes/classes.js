@@ -1,7 +1,24 @@
 const express = require("express");
 const db = require("../database");
+const { body, validationResult } = require("express-validator");
 
 const router = express.Router();
+
+classValidationRules = [
+  body("email").isEmail().trim().escape(),
+  body("classType").notEmpty().trim().escape(),
+  body("description").notEmpty().trim().escape(),
+  body("classSchedule").trim().escape(),
+  body("classCancelled").trim().escape(),
+];
+
+checkRules = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  next();
+};
 
 // all routes start with /classes
 
@@ -18,7 +35,7 @@ router.get("/:classID", async (req, res) => {
   res.status(200).json(results);
 });
 
-router.post("/create", async (req, res) => {
+router.post("/create", classValidationRules, checkRules, async (req, res) => {
   const { classType, description, classSchedule, email } = req.body;
   if (classType && description && classSchedule && email) {
     try {
@@ -36,7 +53,7 @@ router.post("/create", async (req, res) => {
   }
 });
 
-router.post("/update", async (req, res) => {
+router.post("/update", classValidationRules, checkRules, async (req, res) => {
   const {
     classID,
     classType,

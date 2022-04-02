@@ -70,7 +70,6 @@ app.use((req, res, next) => {
     req.method,
     req.url
     // req.session.user.email,
-    // req.session.user.userType
   );
   next();
   //   } else {

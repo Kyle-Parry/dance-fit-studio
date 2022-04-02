@@ -1,7 +1,23 @@
 const express = require("express");
 const db = require("../database");
+const { body, validationResult } = require("express-validator");
 
 const router = express.Router();
+
+bookingValidationRules = [
+  body("email").isEmail().trim().escape(),
+  body("classID").notEmpty().trim().escape(),
+  body("bookingDate").notEmpty().trim().escape(),
+  body("cancelDate").trim().escape(),
+];
+
+checkRules = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  next();
+};
 
 // all routes start with /bookings
 
@@ -19,7 +35,7 @@ router.get("/:bookingNumber", async (req, res) => {
   res.status(200).json(results);
 });
 
-router.post("/create", async (req, res) => {
+router.post("/create", bookingValidationRules, checkRules, async (req, res) => {
   const { email, classID, bookingDate } = req.body;
   if (email && classID && bookingDate) {
     try {
@@ -37,7 +53,7 @@ router.post("/create", async (req, res) => {
   }
 });
 
-router.post("/update", async (req, res) => {
+router.post("/update", bookingValidationRules, checkRules, async (req, res) => {
   const { bookingNumber, cancelDate } = req.body;
   if (bookingNumber && cancelDate) {
     try {
