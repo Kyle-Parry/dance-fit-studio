@@ -1,9 +1,5 @@
 # Dance Fit Studio
 
-## Description
-
-This app has two main purposes the first of which is to create an easy and smooth process for customers to purchase one of DFS’s packages, purchase a subscription plan, book/reschedule/cancel bookings, view their account details, and purchase merchandise. The secondary function of this app is to simplify and automate functions to help the business run smoothly through automating email notifications, tracking clients who need to sign a medical waiver, and tracking class bookings.
-
 ## Getting Started
 
 ### Dependencies
