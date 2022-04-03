@@ -4,8 +4,7 @@
 
 ### Dependencies
 
-Node.js
-MySQL
+Node.js, MySQL
 
 ### Installing
 
