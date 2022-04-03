@@ -5,6 +5,7 @@ const { body, validationResult } = require("express-validator");
 
 const router = express.Router();
 
+// validation rules
 userValidationRules = [
   body("email").isEmail().trim().escape(),
   body("password").isLength({ min: 5 }).trim().escape(),
@@ -13,6 +14,7 @@ userValidationRules = [
   body("accountLevel").trim().escape(),
 ];
 
+// check validation rules function
 checkRules = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -28,6 +30,7 @@ router.get("/", async (req, res) => {
   res.status(200).json(results);
 });
 
+// get user by email
 router.get("/:email", async (req, res) => {
   const email = req.params.email;
   const results = await db.query(`SELECT * FROM users WHERE email = ?`, [
@@ -35,10 +38,10 @@ router.get("/:email", async (req, res) => {
   ]);
   res.status(200).json(results);
 });
-
+// create user middleware
 router.post("/create", userValidationRules, checkRules, async (req, res) => {
   const { email, password, firstName, lastName, accountLevel } = req.body;
-
+  // password hashing
   const hash = await bcrypt.hashSync(password, 10);
 
   if (email && hash && firstName && lastName && accountLevel) {
@@ -57,6 +60,7 @@ router.post("/create", userValidationRules, checkRules, async (req, res) => {
   }
 });
 
+// update user middleware
 router.post("/update", userValidationRules, checkRules, async (req, res) => {
   const { email, password, firstName, lastName, accountLevel } = req.body;
 
@@ -81,6 +85,7 @@ router.post("/update", userValidationRules, checkRules, async (req, res) => {
   }
 });
 
+// delete user middleware
 router.post("/delete", async (req, res) => {
   const email = req.body;
   if (email) {

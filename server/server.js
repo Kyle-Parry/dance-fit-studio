@@ -13,6 +13,7 @@ const port = process.env.PORT || 8080;
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
+// enable session middleware so that we have state
 app.use(
   session({
     secret: "this is a secret",
@@ -47,20 +48,20 @@ const speedLimiter = slowDown({
 //  apply to all requests
 app.use(speedLimiter);
 
+// whitelisting origin to localhost
 const corsOptions = {
   origin: "localhost",
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
-//not working properly
 app.use(cors(corsOptions));
 
 app.listen(80, function () {
   console.log("CORS-enabled web server listening on port 80");
 });
-const logRoute = require("./routes/log.js");
 
-// fix after login is setup
+// request logging middleware
+const logRoute = require("./routes/log.js");
 app.use((req, res, next) => {
   // let userLoggedIn = req.session.user != null
   // if (userLoggedIn === true) {
@@ -83,6 +84,7 @@ app.use((req, res, next) => {
   //   }
 });
 
+// links to all routes
 const usersRoutes = require("./routes/users.js");
 app.use("/users", usersRoutes);
 
@@ -98,6 +100,7 @@ app.get("/", (req, res) => {
   res.send("hello from the other side");
 });
 
+// server starting message
 app.listen(port, () =>
   console.log(`server running on port: http://localhost:${port}`)
 );

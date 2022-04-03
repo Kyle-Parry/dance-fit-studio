@@ -4,6 +4,7 @@ const { body, validationResult } = require("express-validator");
 
 const router = express.Router();
 
+// validation rules
 bookingValidationRules = [
   body("email").isEmail().trim().escape(),
   body("classID").notEmpty().trim().escape(),
@@ -11,6 +12,7 @@ bookingValidationRules = [
   body("cancelDate").trim().escape(),
 ];
 
+// check validation rules function
 checkRules = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -26,6 +28,7 @@ router.get("/", async (req, res) => {
   res.status(200).send(results);
 });
 
+// get booking by bookingNumber
 router.get("/:bookingNumber", async (req, res) => {
   const bookingNumber = req.params.bookingNumber;
   const results = await db.query(
@@ -35,6 +38,7 @@ router.get("/:bookingNumber", async (req, res) => {
   res.status(200).json(results);
 });
 
+// create booking middleware
 router.post("/create", bookingValidationRules, checkRules, async (req, res) => {
   const { email, classID, bookingDate } = req.body;
   if (email && classID && bookingDate) {
@@ -53,6 +57,7 @@ router.post("/create", bookingValidationRules, checkRules, async (req, res) => {
   }
 });
 
+// update booking middleware
 router.post("/update", bookingValidationRules, checkRules, async (req, res) => {
   const { bookingNumber, cancelDate } = req.body;
   if (bookingNumber && cancelDate) {
@@ -74,6 +79,7 @@ router.post("/update", bookingValidationRules, checkRules, async (req, res) => {
   }
 });
 
+// delete booking middleware
 router.post("/delete", async (req, res) => {
   const email = req.body;
   if (email) {

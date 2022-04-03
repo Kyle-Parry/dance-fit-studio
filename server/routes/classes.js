@@ -4,6 +4,7 @@ const { body, validationResult } = require("express-validator");
 
 const router = express.Router();
 
+// validation rules
 classValidationRules = [
   body("email").isEmail().trim().escape(),
   body("classType").notEmpty().trim().escape(),
@@ -12,6 +13,7 @@ classValidationRules = [
   body("classCancelled").trim().escape(),
 ];
 
+// check validation rules function
 checkRules = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -27,6 +29,7 @@ router.get("/", async (req, res) => {
   res.status(200).send(results);
 });
 
+// get class by classID
 router.get("/:classID", async (req, res) => {
   const classID = req.params.classID;
   const results = await db.query(`SELECT * FROM classes WHERE classID = ?`, [
@@ -35,6 +38,7 @@ router.get("/:classID", async (req, res) => {
   res.status(200).json(results);
 });
 
+// create class middleware
 router.post("/create", classValidationRules, checkRules, async (req, res) => {
   const { classType, description, classSchedule, email } = req.body;
   if (classType && description && classSchedule && email) {
@@ -53,6 +57,7 @@ router.post("/create", classValidationRules, checkRules, async (req, res) => {
   }
 });
 
+// update class middleware
 router.post("/update", classValidationRules, checkRules, async (req, res) => {
   const {
     classID,
@@ -88,6 +93,7 @@ router.post("/update", classValidationRules, checkRules, async (req, res) => {
   }
 });
 
+// delete class middleware
 router.post("/delete", async (req, res) => {
   const classID = req.body;
   if (classID) {
