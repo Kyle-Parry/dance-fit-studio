@@ -23,7 +23,6 @@ checkRules = (req, res, next) => {
 };
 
 // all routes start with /classes
-
 router.get("/", async (req, res) => {
   const results = await db.query(`SELECT * FROM classes`);
   res.status(200).send(results);
