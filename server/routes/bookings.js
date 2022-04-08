@@ -59,12 +59,12 @@ router.post("/create", bookingValidationRules, checkRules, async (req, res) => {
 
 // update booking middleware
 router.post("/update", bookingValidationRules, checkRules, async (req, res) => {
-  const { bookingNumber, cancelDate } = req.body;
-  if (bookingNumber && cancelDate) {
+  const { bookingNumber, email, classID, bookingDate, cancelDate } = req.body;
+  if (bookingNumber && email && classID && bookingDate && cancelDate) {
     try {
       const result = await db.query(
-        `UPDATE bookings SET cancelDate = ? WHERE bookingNumber = ?`,
-        [bookingNumber, classID, bookingDate, cancelDate]
+        `UPDATE bookings SET email = ?, classID = ?, bookingDate = ?, cancelDate = ? WHERE bookingNumber = ?`,
+        [email, classID, bookingDate, cancelDate, bookingNumber]
       );
       if (result.affectedRows > 0) {
         res.status(200).send({ msg: "Booking Updated" });

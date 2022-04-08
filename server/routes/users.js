@@ -26,18 +26,22 @@ checkRules = (req, res, next) => {
 // all routes start with /users
 
 router.get("/", async (req, res) => {
-  const results = await db.query(`SELECT * FROM users`);
+  const results = await db.query(
+    `SELECT email, firstName, lastName, accountLevel FROM users`
+  );
   res.status(200).json(results);
 });
 
 // get user by email
 router.get("/:email", async (req, res) => {
   const email = req.params.email;
-  const results = await db.query(`SELECT * FROM users WHERE email = ?`, [
-    email,
-  ]);
+  const results = await db.query(
+    `SELECT email, firstName, lastName, accountLevel FROM users WHERE email = ?`,
+    [email]
+  );
   res.status(200).json(results);
 });
+
 // create user middleware
 router.post("/create", userValidationRules, checkRules, async (req, res) => {
   const { email, password, firstName, lastName, accountLevel } = req.body;
