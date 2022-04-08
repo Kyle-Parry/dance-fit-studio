@@ -24,7 +24,6 @@ checkRules = (req, res, next) => {
 };
 
 // all routes start with /users
-
 router.get("/", async (req, res) => {
   const results = await db.query(
     `SELECT email, firstName, lastName, accountLevel FROM users`

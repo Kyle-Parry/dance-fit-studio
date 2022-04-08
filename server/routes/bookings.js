@@ -22,7 +22,6 @@ checkRules = (req, res, next) => {
 };
 
 // all routes start with /bookings
-
 router.get("/", async (req, res) => {
   const results = await db.query(`SELECT * FROM bookings`);
   res.status(200).send(results);
