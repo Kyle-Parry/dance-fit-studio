@@ -7,7 +7,7 @@ const router = express.Router();
 
 // validation rules
 userValidationRules = [
-  body("email").isEmail().trim().escape(),
+  body("username").isEmail().trim().escape(),
   body("password").isLength({ min: 5 }).trim().escape(),
   body("firstName").notEmpty().trim().escape(),
   body("lastName").notEmpty().trim().escape(),
@@ -26,33 +26,33 @@ checkRules = (req, res, next) => {
 // all routes start with /users
 router.get("/", async (req, res) => {
   const results = await db.query(
-    `SELECT email, firstName, lastName, accountLevel FROM users`
+    `SELECT username, firstName, lastName, accountLevel FROM users`
   );
   res.status(200).json(results);
 });
 
-// get user by email
-router.get("/:email", async (req, res) => {
-  const email = req.params.email;
+// get user by username
+router.get("/:username", async (req, res) => {
+  const username = req.params.username;
   const results = await db.query(
-    `SELECT email, firstName, lastName, accountLevel FROM users WHERE email = ?`,
-    [email]
+    `SELECT username, firstName, lastName, accountLevel FROM users WHERE username = ?`,
+    [username]
   );
   res.status(200).json(results);
 });
 
 // create user middleware
 router.post("/create", userValidationRules, checkRules, async (req, res) => {
-  const { email, password, firstName, lastName, accountLevel } = req.body;
+  const { username, password, firstName, lastName, accountLevel } = req.body;
   // password hashing
   const hash = await bcrypt.hashSync(password, 10);
 
-  if (email && hash && firstName && lastName && accountLevel) {
+  if (username && hash && firstName && lastName && accountLevel) {
     try {
       const result = await db.query(
-        `INSERT INTO users (email, password, firstName, lastName, accountLevel)
+        `INSERT INTO users (username, password, firstName, lastName, accountLevel)
         VALUES (?, ?, ?, ?, ?)`,
-        [email, hash, firstName, lastName, accountLevel]
+        [username, hash, firstName, lastName, accountLevel]
       );
       res.status(201).send({ msg: "Created User" });
       console.log(result);
@@ -65,15 +65,15 @@ router.post("/create", userValidationRules, checkRules, async (req, res) => {
 
 // update user middleware
 router.post("/update", userValidationRules, checkRules, async (req, res) => {
-  const { email, password, firstName, lastName, accountLevel } = req.body;
+  const { username, password, firstName, lastName, accountLevel } = req.body;
 
   const hash = await bcrypt.hashSync(password, 10);
 
-  if (email && hash && firstName && lastName && accountLevel) {
+  if (username && hash && firstName && lastName && accountLevel) {
     try {
       const result = await db.query(
-        `UPDATE users SET password = ?, firstName = ?, lastName = ?, accountLevel = ? WHERE email = ?`,
-        [hash, firstName, lastName, accountLevel, email]
+        `UPDATE users SET password = ?, firstName = ?, lastName = ?, accountLevel = ? WHERE username = ?`,
+        [hash, firstName, lastName, accountLevel, username]
       );
       if (result.affectedRows > 0) {
         res.status(200).send({ msg: "User Updated" });
@@ -90,11 +90,11 @@ router.post("/update", userValidationRules, checkRules, async (req, res) => {
 
 // delete user middleware
 router.post("/delete", async (req, res) => {
-  const email = req.body;
-  if (email) {
+  const username = req.body;
+  if (username) {
     try {
-      const result = await db.query(`DELETE FROM users WHERE email = ?`, [
-        email,
+      const result = await db.query(`DELETE FROM users WHERE username = ?`, [
+        username,
       ]);
       if (result.affectedRows > 0) {
         res.status(204).send({ msg: "User Deleted" });

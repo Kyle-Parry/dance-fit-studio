@@ -6,7 +6,7 @@ const router = express.Router();
 
 // validation rules
 classValidationRules = [
-  body("email").isEmail().trim().escape(),
+  body("username").isEmail().trim().escape(),
   body("classType").notEmpty().trim().escape(),
   body("description").notEmpty().trim().escape(),
   body("classSchedule").trim().escape(),
@@ -39,13 +39,13 @@ router.get("/:classID", async (req, res) => {
 
 // create class middleware
 router.post("/create", classValidationRules, checkRules, async (req, res) => {
-  const { classType, description, classSchedule, email } = req.body;
-  if (classType && description && classSchedule && email) {
+  const { classType, description, classSchedule, username } = req.body;
+  if (classType && description && classSchedule && username) {
     try {
       const result = await db.query(
-        `INSERT INTO classes (classType, description, classSchedule, email)
+        `INSERT INTO classes (classType, description, classSchedule, username)
         VALUES (?, ?, ?, ?)`,
-        [classType, description, classSchedule, email]
+        [classType, description, classSchedule, username]
       );
       res.status(201).send({ msg: "Created Class" });
       console.log(result);
@@ -64,7 +64,7 @@ router.post("/update", classValidationRules, checkRules, async (req, res) => {
     description,
     classSchedule,
     classCancelled,
-    email,
+    username,
   } = req.body;
   if (
     classID &&
@@ -72,12 +72,19 @@ router.post("/update", classValidationRules, checkRules, async (req, res) => {
     description &&
     classSchedule &&
     classCancelled &&
-    email
+    username
   ) {
     try {
       const result = await db.query(
-        `UPDATE classes SET classType = ?, description = ?, classSchedule = ?, classCancelled = ?, email = ? WHERE classID = ?`,
-        [classType, description, classSchedule, classCancelled, email, classID]
+        `UPDATE classes SET classType = ?, description = ?, classSchedule = ?, classCancelled = ?, username = ? WHERE classID = ?`,
+        [
+          classType,
+          description,
+          classSchedule,
+          classCancelled,
+          username,
+          classID,
+        ]
       );
       if (result.affectedRows > 0) {
         res.status(200).send({ msg: "Class Updated" });

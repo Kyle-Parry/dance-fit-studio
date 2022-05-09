@@ -5,7 +5,6 @@ const session = require("express-session");
 const bodyParser = require("body-parser");
 const rateLimit = require("express-rate-limit");
 const slowDown = require("express-slow-down");
-const cors = require("cors");
 const local = require("./strategies/local.js");
 const passport = require("passport");
 
@@ -53,15 +52,23 @@ const speedLimiter = slowDown({
 app.use(speedLimiter);
 
 // whitelisting origin to localhost
-const corsOptions = {
-  origin: "localhost",
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-};
+// Cors locks the domain of the web service to only accept requests from
+// the origin domain listed in the corsOptions
+app.use(function (req, res, next) {
+  var allowedDomains = ["http://localhost:3000", "http://localhost:8080"];
+  var origin = req.headers.origin;
+  if (allowedDomains.indexOf(origin) > -1) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
 
-app.use(cors(corsOptions));
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With,content-type, Accept"
+  );
+  res.setHeader("Access-Control-Allow-Credentials", true);
 
-app.listen(80, function () {
-  console.log("CORS-enabled web server listening on port 80");
+  next();
 });
 
 // request logging middleware
@@ -80,7 +87,7 @@ app.use((req, res, next) => {
       req.sessionID,
       req.method,
       req.url,
-      req.session.user.email
+      req.session.user.username
     );
     next();
   } else {
@@ -88,6 +95,9 @@ app.use((req, res, next) => {
     next();
   }
 });
+
+app.use(express.static("frontend"));
+app.use(express.static("admin"));
 
 // links to all routes
 const usersRoutes = require("./routes/users.js");

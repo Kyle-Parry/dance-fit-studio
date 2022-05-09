@@ -3,15 +3,16 @@ const passport = require("passport");
 const db = require("../database");
 const bcrypt = require("bcrypt");
 
-passport.serializeUser((email, done) => {
-  done(null, email);
+passport.serializeUser((user, done) => {
+  done(null, { username: user.username });
 });
 
-passport.deserializeUser(async (email, done) => {
+passport.deserializeUser(async (username, done) => {
   try {
-    const result = await db.query(`SELECT * FROM users WHERE email = ?`, [
-      email,
+    const result = await db.query(`SELECT * FROM users WHERE username = ?`, [
+      username,
     ]);
+    console.log(result);
     if (result[0][0]) {
       done(null, result[0][0]);
     }
@@ -21,30 +22,26 @@ passport.deserializeUser(async (email, done) => {
 });
 
 passport.use(
-  new LocalStrategy(
-    {
-      // by default, local strategy uses username and password, we will override with email
-      usernameField: "email",
-      passwordField: "password",
-    },
-    async (email, password, done) => {
-      try {
-        const result = await db.query(
-          `SELECT email, password FROM users WHERE email = ?`,
-          [email]
-        );
-        if (result[0].length === 0) {
-          done(null, false);
+  new LocalStrategy(async (username, password, done) => {
+    try {
+      const result = await db.query(
+        `SELECT username, password FROM users WHERE username = ?`,
+        [username]
+      );
+      const hash = await bcrypt.hashSync(password, 10);
+      const match = await bcrypt.compare(password, hash);
+      // console.log(match);
+      if (!match) {
+        done(null, false);
+      } else {
+        if (match) {
+          done(null, result[0]);
         } else {
-          if (result[0].password === password) {
-            done(null, result[0]);
-          } else {
-            done(null, false);
-          }
+          done(null, false);
         }
-      } catch (err) {
-        done(err, false);
       }
+    } catch (err) {
+      done(err, false);
     }
-  )
+  })
 );
