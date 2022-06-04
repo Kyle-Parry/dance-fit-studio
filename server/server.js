@@ -122,6 +122,9 @@ app.use("/bookings", bookingRoutes);
 const specialRoutes = require("./routes/special-occasions.js");
 app.use("/special", specialRoutes);
 
+const adminRoute = require("./routes/admin.js");
+app.use("/admin", adminRoute);
+
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend", "index.html"));
 });

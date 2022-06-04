@@ -20,6 +20,7 @@ passport.deserializeUser(async (userId, done) => {
 });
 
 passport.use(
+  "user",
   new LocalStrategy(
     { usernameField: "email" },
     async (email, password, done) => {
@@ -33,6 +34,33 @@ passport.use(
           done(null, false);
         } else {
           if (match) {
+            done(null, user[0]);
+          } else {
+            done(null, false);
+          }
+        }
+      } catch (err) {
+        done(err, false);
+      }
+    }
+  )
+);
+
+passport.use(
+  "admin",
+  new LocalStrategy(
+    { usernameField: "email" },
+    async (email, password, done) => {
+      try {
+        const user = await db.query(`SELECT * FROM users WHERE email = ?`, [
+          email,
+        ]);
+        const match = await bcrypt.compare(password, user[0].password);
+        // console.log(match);
+        if (user[0].length === 0) {
+          done(null, false);
+        } else {
+          if (match && user[0].accountLevel === "Admin") {
             done(null, user[0]);
           } else {
             done(null, false);
