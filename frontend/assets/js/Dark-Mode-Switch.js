@@ -1,13 +1,19 @@
-const darkSwitch = document.getElementById('darkSwitch');
-window.addEventListener('load', () => {
+const darkSwitch = document.getElementById("darkSwitch");
+
+if (localStorage.getItem("darkSwitch") === null) {
+  document.body.removeAttribute("data-theme");
+} else {
+  document.body.setAttribute("data-theme", "dark");
+}
+
+window.addEventListener("load", () => {
   if (darkSwitch) {
     initTheme();
-    darkSwitch.addEventListener('change', () => {
+    darkSwitch.addEventListener("change", () => {
       resetTheme();
     });
   }
 });
-
 
 /**
  * Summary: function that adds or removes the attribute 'data-theme' depending if
@@ -22,13 +28,13 @@ window.addEventListener('load', () => {
  */
 function initTheme() {
   const darkThemeSelected =
-    localStorage.getItem('darkSwitch') !== null &&
-    localStorage.getItem('darkSwitch') === 'dark';
+    localStorage.getItem("darkSwitch") !== null &&
+    localStorage.getItem("darkSwitch") === "dark";
   darkSwitch.checked = darkThemeSelected;
-  darkThemeSelected ? document.body.setAttribute('data-theme', 'dark') :
-    document.body.removeAttribute('data-theme');
+  darkThemeSelected
+    ? document.body.setAttribute("data-theme", "dark")
+    : document.body.removeAttribute("data-theme");
 }
-
 
 /**
  * Summary: resetTheme checks if the switch is 'on' or 'off' and if it is toggled
@@ -38,10 +44,10 @@ function initTheme() {
  */
 function resetTheme() {
   if (darkSwitch.checked) {
-    document.body.setAttribute('data-theme', 'dark');
-    localStorage.setItem('darkSwitch', 'dark');
+    document.body.setAttribute("data-theme", "dark");
+    localStorage.setItem("darkSwitch", "dark");
   } else {
-    document.body.removeAttribute('data-theme');
-    localStorage.removeItem('darkSwitch');
+    document.body.removeAttribute("data-theme");
+    localStorage.removeItem("darkSwitch");
   }
 }

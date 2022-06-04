@@ -5,8 +5,10 @@ const session = require("express-session");
 const bodyParser = require("body-parser");
 const rateLimit = require("express-rate-limit");
 const slowDown = require("express-slow-down");
-const local = require("./strategies/local.js");
+const local = require("./passport-config.js");
 const passport = require("passport");
+const db = require("./database");
+const path = require("path");
 
 const store = new session.MemoryStore();
 const app = express();
@@ -18,8 +20,10 @@ app.use(express.urlencoded({ extended: true }));
 // enable session middleware so that we have state
 app.use(
   session({
-    secret: "secret",
-    cookie: { maxAge: 6000 },
+    secret: process.env.SESSION_SECRET,
+    cookie: {
+      maxAge: 3000000,
+    },
     saveUninitialized: false,
     store,
   })
@@ -61,7 +65,7 @@ app.use(function (req, res, next) {
     res.setHeader("Access-Control-Allow-Origin", origin);
   }
 
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUSH, DELETE");
   res.setHeader(
     "Access-Control-Allow-Headers",
     "X-Requested-With,content-type, Accept"
@@ -80,14 +84,14 @@ app.use(function (req, res, next) {
 
 const logRoute = require("./routes/log.js");
 app.use((req, res, next) => {
-  let userLoggedIn = req.session.user != null;
+  let userLoggedIn = req.user != null;
   if (userLoggedIn === true) {
     logRoute.addLog(
       req.ip,
       req.sessionID,
       req.method,
       req.url,
-      req.session.user.username
+      req.user[0].userId
     );
     next();
   } else {
@@ -106,17 +110,65 @@ app.use("/users", usersRoutes);
 const authRoute = require("./routes/auth.js");
 app.use("/auth", authRoute);
 
+const logoutRoute = require("./routes/logout.js");
+app.use("/logout", logoutRoute);
+
 const classRoutes = require("./routes/classes.js");
 app.use("/classes", classRoutes);
 
 const bookingRoutes = require("./routes/bookings.js");
 app.use("/bookings", bookingRoutes);
 
-app.get("/", (req, res) => {
-  console.log("Test!");
+const specialRoutes = require("./routes/special-occasions.js");
+app.use("/special", specialRoutes);
 
-  res.send("hello from the other side");
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "index.html"));
 });
+app.get("/class-list", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "classes.html"));
+});
+app.get("/login", checkNotAuthentication, (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "login.html"));
+});
+app.get("/register", checkNotAuthentication, (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "register.html"));
+});
+app.get("/special-occasions", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "special-occasions.html"));
+});
+app.get("/settings", checkAuthentication, (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "settings.html"));
+});
+app.get("/contact", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "contact.html"));
+});
+app.get("/your-classes", checkAuthentication, (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "your-classes.html"));
+});
+app.get("/booking", checkAuthentication, (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "bookings.html"));
+});
+app.get("/cancel", checkAuthentication, (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "cancel-booking.html"));
+});
+
+function checkAuthentication(req, res, next) {
+  if (req.isAuthenticated()) {
+    //req.isAuthenticated() will return true if user is logged in
+    next();
+  } else {
+    res.redirect("/login");
+  }
+}
+
+function checkNotAuthentication(req, res, next) {
+  if (req.isAuthenticated()) {
+    //req.isAuthenticated() will return false if user is not logged in
+    res.redirect("/");
+  }
+  next();
+}
 
 // server starting message
 app.listen(port, () =>

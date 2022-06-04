@@ -7,6 +7,7 @@
       content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
     />
     <title>dancefit</title>
+    <link rel="manifest" href="manifest.json" />
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
     <link
       rel="stylesheet"
@@ -29,69 +30,115 @@
     <link rel="stylesheet" href="assets/css/Map-Clean.css" />
     <link rel="stylesheet" href="assets/css/Pretty-Registration-Form.css" />
     <link rel="stylesheet" href="assets/css/Registration-Form-with-Photo.css" />
-    <link rel="stylesheet" href="assets/css/styles.css" />
     <link rel="stylesheet" href="assets/css/Toggle-Switches.css" />
+    <link rel="stylesheet" href="assets/css/spinner.css" />
     <script src="js/nav.js" defer></script>
+    <script src="js/register.js" defer></script>
   </head>
 
-  <body>
+  <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-light navbar-expand-md bg-white"></nav>
-    <section class="register-photo min-vh-100">
+    <section class="register-photo flex-grow-1">
       <div class="form-container">
-        <form method="post">
+        <form
+          method="post"
+          id="register-user-form"
+          class="needs-validation"
+          novalidate
+        >
           <h2 class="text-center"><strong>Create</strong> an account.</h2>
           <div class="mb-3">
-            <input class="form-control" type="text" placeholder="First Name" />
-          </div>
-          <div class="mb-3">
-            <input class="form-control" type="text" placeholder="Last Name" />
+            <input
+              id="firstName"
+              class="form-control"
+              type="text"
+              name="firstName"
+              placeholder="First Name"
+              pattern="/^[a-z ,.'-]+$/i"
+              required
+            />
+            <div class="invalid-feedback">Please fill out this field.</div>
           </div>
           <div class="mb-3">
             <input
+              id="lastName"
+              class="form-control"
+              type="text"
+              name="lastName"
+              placeholder="Last Name"
+              pattern="/^[a-z ,.'-]+$/i"
+              required
+            />
+            <div class="invalid-feedback">Please fill out this field.</div>
+          </div>
+          <div class="mb-3">
+            <input
+              id="email"
               class="form-control"
               type="email"
               name="email"
               placeholder="Email"
+              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+              required
             />
+            <div class="invalid-feedback">Not a valid Email.</div>
           </div>
           <div class="mb-3">
             <input
+              id="password"
               class="form-control"
               type="password"
               name="password"
               placeholder="Password"
+              pattern="^.{5,20}$"
+              required
             />
+            <div class="invalid-feedback">
+              Password needs to be between 5 and 20 characters.
+            </div>
           </div>
           <div class="mb-3">
             <input
+              id="confirm-password"
               class="form-control"
               type="password"
-              name="password-repeat"
               placeholder="Password (repeat)"
+              required
             />
+            <div class="invalid-feedback">Password does not match.</div>
           </div>
           <div class="mb-3">
             <div class="form-check">
               <label class="form-check-label"
-                ><input class="form-check-input" type="checkbox" />I agree to
-                the license terms.</label
+                ><input class="form-check-input" type="checkbox" required />I
+                agree to the license terms.</label
               >
+              <div class="invalid-feedback">
+                You must agree to the terms and conditions to Register.
+              </div>
             </div>
           </div>
           <div class="mb-3">
             <button
               class="btn btn-primary d-block w-100 bg-primary"
               type="submit"
+              onclick="postRegisterUser()"
             >
               Sign Up
             </button>
           </div>
-          <a class="already" href="#"
+          <a class="already" href="login.html"
             >You already have an account? Login here.</a
           >
         </form>
       </div>
     </section>
+    <footer id="footer" class="footer-basic mt-auto"></footer>
+    <div id="spinner" class="d-flex justify-content-center">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/Dark-Mode-Switch.js"></script>
   </body>

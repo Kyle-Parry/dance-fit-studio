@@ -7,11 +7,10 @@ const router = express.Router();
 
 // validation rules
 userValidationRules = [
-  body("username").isEmail().trim().escape(),
+  body("email").isEmail().trim().escape(),
   body("password").isLength({ min: 5 }).trim().escape(),
   body("firstName").notEmpty().trim().escape(),
   body("lastName").notEmpty().trim().escape(),
-  body("accountLevel").trim().escape(),
 ];
 
 // check validation rules function
@@ -24,35 +23,35 @@ checkRules = (req, res, next) => {
 };
 
 // all routes start with /users
-router.get("/", async (req, res) => {
+router.get("/all", async (req, res) => {
   const results = await db.query(
-    `SELECT username, firstName, lastName, accountLevel FROM users`
+    `SELECT userId, email, firstName, lastName, accountLevel FROM users`
   );
   res.status(200).json(results);
 });
 
-// get user by username
-router.get("/:username", async (req, res) => {
-  const username = req.params.username;
+// get user by email
+router.get("/:userId", async (req, res) => {
+  const userId = req.user[0].userId;
   const results = await db.query(
-    `SELECT username, firstName, lastName, accountLevel FROM users WHERE username = ?`,
-    [username]
+    `SELECT email, firstName, lastName FROM users WHERE userId = ?`,
+    [userId]
   );
   res.status(200).json(results);
 });
 
 // create user middleware
 router.post("/create", userValidationRules, checkRules, async (req, res) => {
-  const { username, password, firstName, lastName, accountLevel } = req.body;
+  const { firstName, lastName, email, password } = req.body;
   // password hashing
   const hash = await bcrypt.hashSync(password, 10);
 
-  if (username && hash && firstName && lastName && accountLevel) {
+  if (firstName && lastName && email && hash) {
     try {
       const result = await db.query(
-        `INSERT INTO users (username, password, firstName, lastName, accountLevel)
-        VALUES (?, ?, ?, ?, ?)`,
-        [username, hash, firstName, lastName, accountLevel]
+        `INSERT INTO users (firstName, lastName, email, password)
+        VALUES (?, ?, ?, ?)`,
+        [firstName, lastName, email, hash]
       );
       res.status(201).send({ msg: "Created User" });
       console.log(result);
@@ -65,15 +64,15 @@ router.post("/create", userValidationRules, checkRules, async (req, res) => {
 
 // update user middleware
 router.post("/update", userValidationRules, checkRules, async (req, res) => {
-  const { username, password, firstName, lastName, accountLevel } = req.body;
-
+  const { email, lastName, firstName, password } = req.body;
+  const userId = req.user[0].userId;
   const hash = await bcrypt.hashSync(password, 10);
 
-  if (username && hash && firstName && lastName && accountLevel) {
+  if (email && lastName && firstName && hash && userId) {
     try {
       const result = await db.query(
-        `UPDATE users SET password = ?, firstName = ?, lastName = ?, accountLevel = ? WHERE username = ?`,
-        [hash, firstName, lastName, accountLevel, username]
+        `UPDATE users SET email = ?, firstName = ?, lastName = ?, password = ? WHERE userId  = ?`,
+        [email, firstName, lastName, hash, userId]
       );
       if (result.affectedRows > 0) {
         res.status(200).send({ msg: "User Updated" });
@@ -90,11 +89,11 @@ router.post("/update", userValidationRules, checkRules, async (req, res) => {
 
 // delete user middleware
 router.post("/delete", async (req, res) => {
-  const username = req.body;
-  if (username) {
+  const email = req.body;
+  if (email) {
     try {
-      const result = await db.query(`DELETE FROM users WHERE username = ?`, [
-        username,
+      const result = await db.query(`DELETE FROM users WHERE email = ?`, [
+        email,
       ]);
       if (result.affectedRows > 0) {
         res.status(204).send({ msg: "User Deleted" });

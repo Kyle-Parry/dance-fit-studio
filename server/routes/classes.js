@@ -6,7 +6,7 @@ const router = express.Router();
 
 // validation rules
 classValidationRules = [
-  body("username").isEmail().trim().escape(),
+  body("userId").trim().escape(),
   body("classType").notEmpty().trim().escape(),
   body("description").notEmpty().trim().escape(),
   body("classSchedule").trim().escape(),
@@ -24,7 +24,11 @@ checkRules = (req, res, next) => {
 
 // all routes start with /classes
 router.get("/", async (req, res) => {
-  const results = await db.query(`SELECT * FROM classes`);
+  const results =
+    await db.query(`SELECT c.classID, c.classType, c.Description, c.classTime, i.imgPath, i.imgAlt, DATE_FORMAT(c.classDate, "%W %M %e %Y") AS date
+  FROM classes c 
+  INNER JOIN images i ON (i.imgID = c.imgID)
+  WHERE c.classDate >= CURDATE()`);
   res.status(200).send(results);
 });
 
@@ -39,13 +43,14 @@ router.get("/:classID", async (req, res) => {
 
 // create class middleware
 router.post("/create", classValidationRules, checkRules, async (req, res) => {
-  const { classType, description, classSchedule, username } = req.body;
-  if (classType && description && classSchedule && username) {
+  const { classType, description, classSchedule } = req.body;
+  const userId = JSON.stringify(req.user);
+  if (classType && description && classSchedule && userId) {
     try {
       const result = await db.query(
-        `INSERT INTO classes (classType, description, classSchedule, username)
+        `INSERT INTO classes (classType, description, classSchedule, userId)
         VALUES (?, ?, ?, ?)`,
-        [classType, description, classSchedule, username]
+        [classType, description, classSchedule, userId]
       );
       res.status(201).send({ msg: "Created Class" });
       console.log(result);
@@ -64,7 +69,7 @@ router.post("/update", classValidationRules, checkRules, async (req, res) => {
     description,
     classSchedule,
     classCancelled,
-    username,
+    userId,
   } = req.body;
   if (
     classID &&
@@ -72,19 +77,12 @@ router.post("/update", classValidationRules, checkRules, async (req, res) => {
     description &&
     classSchedule &&
     classCancelled &&
-    username
+    userId
   ) {
     try {
       const result = await db.query(
-        `UPDATE classes SET classType = ?, description = ?, classSchedule = ?, classCancelled = ?, username = ? WHERE classID = ?`,
-        [
-          classType,
-          description,
-          classSchedule,
-          classCancelled,
-          username,
-          classID,
-        ]
+        `UPDATE classes SET classType = ?, description = ?, classSchedule = ?, classCancelled = ?, userId = ? WHERE classID = ?`,
+        [classType, description, classSchedule, classCancelled, userId, classID]
       );
       if (result.affectedRows > 0) {
         res.status(200).send({ msg: "Class Updated" });

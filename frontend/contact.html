@@ -7,6 +7,7 @@
       content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
     />
     <title>dancefit</title>
+    <link rel="manifest" href="manifest.json" />
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
     <link
       rel="stylesheet"
@@ -29,12 +30,12 @@
     <link rel="stylesheet" href="assets/css/Map-Clean.css" />
     <link rel="stylesheet" href="assets/css/Pretty-Registration-Form.css" />
     <link rel="stylesheet" href="assets/css/Registration-Form-with-Photo.css" />
-    <link rel="stylesheet" href="assets/css/styles.css" />
     <link rel="stylesheet" href="assets/css/Toggle-Switches.css" />
+    <link rel="stylesheet" href="assets/css/spinner.css" />
     <script src="js/nav.js" defer></script>
   </head>
 
-  <body>
+  <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-light navbar-expand-md bg-white"></nav>
     <div class="container p-3">
       <section class="contact-clean">
@@ -51,12 +52,12 @@
           <iframe
             allowfullscreen=""
             frameborder="0"
-            src="https://cdn.bootstrapstudio.io/placeholders/map.html"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3314.4855002046074!2d151.07607521520913!3d-33.82558808066814!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b12a5377159d48b%3A0xa648a1b613501d11!2sWentworth%20Point%20Community%20Centre%20and%20Library!5e0!3m2!1sen!2sau!4v1653457247869!5m2!1sen!2sau"
             width="100%"
             height="450"
           ></iframe>
         </section>
-        <form method="post">
+        <form method="post" class="needs-validation" novalidate>
           <h2 class="text-center">Contact us</h2>
           <div class="mb-3">
             <input
@@ -64,6 +65,8 @@
               type="text"
               name="name"
               placeholder="Name"
+              pattern="/^[a-z ,.'-]+$/i"
+              required
             />
           </div>
           <div class="mb-3">
@@ -72,6 +75,8 @@
               type="email"
               name="email"
               placeholder="Email"
+              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+              required
             /><small class="form-text text-danger"
               >Please enter a correct email address.</small
             >
@@ -82,6 +87,7 @@
               name="message"
               placeholder="Message"
               rows="14"
+              required
             ></textarea>
           </div>
           <div class="mb-3">
@@ -90,22 +96,12 @@
         </form>
       </section>
     </div>
-    <footer class="footer-basic">
-      <div class="social">
-        <a href="#"><i class="icon ion-social-instagram"></i></a
-        ><a href="#"><i class="icon ion-social-snapchat"></i></a
-        ><a href="#"><i class="icon ion-social-twitter"></i></a
-        ><a href="#"><i class="icon ion-social-facebook"></i></a>
+    <footer id="footer" class="footer-basic mt-auto"></footer>
+    <div id="spinner" class="d-flex justify-content-center">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
-      <ul class="list-inline">
-        <li class="list-inline-item"><a href="#">Home</a></li>
-        <li class="list-inline-item"><a href="#">Services</a></li>
-        <li class="list-inline-item"><a href="#">About</a></li>
-        <li class="list-inline-item"><a href="#">Terms</a></li>
-        <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
-      </ul>
-      <p class="copyright">Company Name © 2022</p>
-    </footer>
+    </div>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/Dark-Mode-Switch.js"></script>
   </body>

@@ -6,9 +6,8 @@ const router = express.Router();
 
 // validation rules
 bookingValidationRules = [
-  body("username").isEmail().trim().escape(),
+  body("userId").trim().escape(),
   body("classID").notEmpty().trim().escape(),
-  body("bookingDate").notEmpty().trim().escape(),
   body("cancelDate").trim().escape(),
 ];
 
@@ -28,24 +27,36 @@ router.get("/", async (req, res) => {
 });
 
 // get booking by bookingNumber
-router.get("/:bookingNumber", async (req, res) => {
-  const bookingNumber = req.params.bookingNumber;
+router.get("/:userId", async (req, res) => {
+  const userId = req.user[0].userId;
   const results = await db.query(
-    `SELECT * FROM bookings WHERE bookingNumber = ?`,
-    [bookingNumber]
+    `SELECT b.bookingNumber, b.userId, b.bookingNumber, b.classID, c.classType, c.classTime, DATE_FORMAT(c.classDate, "%W %M %e %Y") AS date
+  FROM bookings b
+  INNER JOIN classes c ON (c.classID = b.classID)
+  WHERE b.userId = ? AND b.cancelDate IS null`,
+    [userId]
   );
   res.status(200).json(results);
 });
 
+router.get("/:bookingNumber", async (req, res) => {
+  const bookingNumber = req.body;
+  const results = await db.query(
+    `SELECT * FROM bookings WHERE bookingNumber = ?`,
+    [bookingNumber]
+  );
+  res.status(200).send(results);
+});
+
 // create booking middleware
 router.post("/create", bookingValidationRules, checkRules, async (req, res) => {
-  const { username, classID, bookingDate } = req.body;
-  if (username && classID && bookingDate) {
+  const userId = req.user[0].userId;
+  const classID = req.body.classID;
+  if (userId && classID) {
     try {
       const result = await db.query(
-        `INSERT INTO bookings (username, classID, bookingDate)
-        VALUES (?, ?, ?)`,
-        [username, classID, bookingDate]
+        `INSERT INTO bookings (userId, classID) VALUES (?, ?);`,
+        [userId, classID]
       );
       res.status(201).send({ msg: "Created Booking" });
       console.log(result);
@@ -57,14 +68,13 @@ router.post("/create", bookingValidationRules, checkRules, async (req, res) => {
 });
 
 // update booking middleware
-router.post("/update", bookingValidationRules, checkRules, async (req, res) => {
-  const { bookingNumber, username, classID, bookingDate, cancelDate } =
-    req.body;
-  if (bookingNumber && username && classID && bookingDate && cancelDate) {
+router.post("/update", async (req, res) => {
+  const bookingNumber = req.body.bookingNumber;
+  if (bookingNumber) {
     try {
       const result = await db.query(
-        `UPDATE bookings SET username = ?, classID = ?, bookingDate = ?, cancelDate = ? WHERE bookingNumber = ?`,
-        [username, classID, bookingDate, cancelDate, bookingNumber]
+        `UPDATE bookings SET cancelDate = NOW() WHERE bookingNumber = ?`,
+        [bookingNumber]
       );
       if (result.affectedRows > 0) {
         res.status(200).send({ msg: "Booking Updated" });
@@ -81,12 +91,12 @@ router.post("/update", bookingValidationRules, checkRules, async (req, res) => {
 
 // delete booking middleware
 router.post("/delete", async (req, res) => {
-  const username = req.body;
-  if (username) {
+  const userId = req.body;
+  if (userId) {
     try {
       const result = await db.query(
         `DELETE FROM bookings WHERE bookingNumber = ?`,
-        [username]
+        [userId]
       );
       if (result.affectedRows > 0) {
         res.status(204).send({ msg: "Booking Deleted" });
