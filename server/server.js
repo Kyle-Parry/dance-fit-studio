@@ -122,9 +122,6 @@ app.use("/bookings", bookingRoutes);
 const specialRoutes = require("./routes/special-occasions.js");
 app.use("/special", specialRoutes);
 
-const adminRoute = require("./routes/admin.js");
-app.use("/admin", adminRoute);
-
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend", "index.html"));
 });
@@ -172,6 +169,17 @@ function checkNotAuthentication(req, res, next) {
   }
   next();
 }
+function checkNotAdmin(req, res, next) {
+  if (req.isAuthenticated() && req.user[0].accountLevel == "Admin")
+    return next();
+  else res.status(401).json("test");
+}
+
+const adminRoute = require("./routes/admin.js");
+app.use("/admin", adminRoute);
+app.get("/admin/*", checkNotAdmin, (req, res) => {
+  res.status(401);
+});
 
 // server starting message
 app.listen(port, () =>

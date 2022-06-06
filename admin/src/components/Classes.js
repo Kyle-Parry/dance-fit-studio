@@ -10,21 +10,21 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-export default function UserPage() {
-  const [users, setUsers] = useState([]);
+export default function ClassPage() {
+  const [classes, setClasses] = useState([]);
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchClasses = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/admin/users");
-        if (response && response.data) setUsers(response.data);
+        const response = await axios.get("http://localhost:8080/admin/classes");
+        if (response && response.data) setClasses(response.data);
       } catch (error) {
         console.log(error.response.data);
         console.log(error.response.status);
         console.log(error.response.headers);
       }
     };
-    fetchUsers();
+    fetchClasses();
   }, []);
 
   return (
@@ -37,17 +37,23 @@ export default function UserPage() {
             bgcolor: "#cfe8fc",
             minHeight: "85vh",
             marginTop: "0%",
-
             flexDirection: "column",
             alignItems: "center",
           }}
         >
-          <Typography variant="h3">Users</Typography>
-          <Button size="small">Create User</Button>
-          {users.map((user) => (
+          <Typography variant="h3">Classes</Typography>
+          <Button size="small">
+            <Link
+              to="/CreateClass"
+              style={{ textDecoration: "inherit", color: "inherit" }}
+            >
+              Create Class
+            </Link>
+          </Button>
+          {classes.map((clas) => (
             <Card
               variant="outlined"
-              key={user.userId}
+              key={clas.classID}
               sx={{ minWidth: 275, margin: "10px" }}
             >
               <CardContent>
@@ -56,35 +62,19 @@ export default function UserPage() {
                   color="text.secondary"
                   gutterBottom
                 >
-                  {user.userId}
+                  {clas.classType}
                 </Typography>
                 <Typography variant="h5" component="div"></Typography>
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                  {user.email}
+                  {clas.date}, {clas.classTime}
                 </Typography>
-                <Typography variant="body2">
-                  {user.firstName} {user.lastName}
-                </Typography>
+                <Typography variant="body2">{clas.Description}</Typography>
               </CardContent>
               <CardActions>
-                <Button size="small">
-                  <Link
-                    style={{ textDecoration: "inherit", color: "inherit" }}
-                    to={`/UpdateUser/${user.userId}`}
-                  >
-                    Update User
-                  </Link>
-                </Button>
+                <Button size="small">Cancel Class</Button>
               </CardActions>
               <CardActions>
-                <Button size="small">
-                  <Link
-                    style={{ textDecoration: "inherit", color: "inherit" }}
-                    to={`/DeleteUser/${user.userId}`}
-                  >
-                    Delete User
-                  </Link>
-                </Button>
+                <Button size="small">Delete</Button>
               </CardActions>
             </Card>
           ))}

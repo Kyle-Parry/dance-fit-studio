@@ -6,7 +6,7 @@ const passport = require("passport");
 const router = Router();
 
 function checkNotAdmin(req, res, next) {
-  if (req.isAuthenticated() && req.user[0].accountLevel != "Admin") {
+  if (req.isAuthenticated() && req.user[0].accountLevel == "Admin") {
     //req.isAuthenticated() will return true if user is logged in
     next();
   } else {
@@ -25,9 +25,9 @@ router.get("/users", async (req, res) => {
 
 // get user by email
 router.get("/users/:userId", async (req, res) => {
-  const userId = req.params.id;
+  const userId = req.params.userId;
   const results = await db.query(
-    `SELECT userId, email, firstName, lastName FROM users WHERE userId = ?`,
+    `SELECT userId, email, firstName, lastName, accountLevel FROM users WHERE userId = ?`,
     [userId]
   );
   res.status(200).json(results);
@@ -61,11 +61,10 @@ router.post(
 
 router.post(
   "/updateUser",
-  userValidationRules,
-  checkRules,
+
   async (req, res) => {
     const accountLevel = req.accountLevel;
-    const userId = req.params.id;
+    const userId = req.userId;
 
     if (accountLevel && userId) {
       try {
@@ -182,8 +181,7 @@ router.get("/classes", async (req, res) => {
   const results =
     await db.query(`SELECT c.classID, c.classType, c.Description, c.classTime, i.imgPath, i.imgAlt, DATE_FORMAT(c.classDate, "%W %M %e %Y") AS date
     FROM classes c 
-    INNER JOIN images i ON (i.imgID = c.imgID)
-    WHERE c.classDate >= CURDATE()`);
+    INNER JOIN images i ON (i.imgID = c.imgID)`);
   res.status(200).send(results);
 });
 

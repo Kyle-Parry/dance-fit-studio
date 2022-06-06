@@ -7,13 +7,15 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
-import AuthContext from "../context/AuthContext";
+import TextareaAutosize from "@mui/material/TextareaAutosize";
 
-export default function LoginPage() {
-  const { auth, setAuth } = useContext(AuthContext);
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
+export default function CreateClassPage() {
   const [errMsg, setErrMsg] = useState("");
+  const [CreateClassType, setCreateClassType] = useState("");
+  const [CreateDescription, setCreateDescription] = useState("");
+  const [CreateClassDate, setCreateClassDate] = useState("");
+  const [CreateClassTime, setCreateClassTime] = useState("");
+  const [CreateImgID, setCreateImgID] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation;
@@ -26,23 +28,15 @@ export default function LoginPage() {
         method: "post",
         url: "http://localhost:8080/auth/admin",
         withCredentials: true,
-        data: {
-          email: loginEmail,
-          password: loginPassword,
-        },
-      }).then((response) => {
-        setAuth({ loggedIn: true });
-        console.log(auth);
+        data: {},
       });
     } catch (error) {
       if (!error.response) {
         setErrMsg("No Server Response");
-      } else if (error.response?.status === 400) {
-        setErrMsg("Missing Email or Password");
       } else if (error.response?.status === 401) {
         setErrMsg("Unauthorized");
       } else {
-        setErrMsg("Login Failed");
+        setErrMsg("Class failed to create.");
       }
     }
   };
@@ -81,20 +75,21 @@ export default function LoginPage() {
 
           <TextField
             required
-            id="email"
-            label="Email"
-            placeholder="Email"
+            id="classType"
+            label="classType"
+            placeholder="Class Type"
             sx={{ bgcolor: "#fff", marginTop: "30px", borderRadius: "5px" }}
-            onChange={(e) => setLoginEmail(e.target.value)}
+            onChange={(e) => setCreateClassType(e.target.value)}
           />
-          <TextField
+          <TextareaAutosize
+            aria-label="minimum height"
+            minRows={10}
+            placeholder="Description"
+            style={{ minWidth: 300, resize: "none" }}
+            onChange={(e) => setCreateDescription(e.target.value)}
             required
-            id="password"
-            label="Password"
-            type="password"
-            sx={{ bgcolor: "#fff", marginTop: "30px", borderRadius: "5px" }}
-            onChange={(e) => setLoginPassword(e.target.value)}
           />
+
           <Typography
             variant="p"
             component="div"

@@ -1,17 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import ResponsiveAppBar from "./components/Navbar";
 import LoginPage from "./components/Login";
 import UserPage from "./components/Users";
+import ClassPage from "./components/Classes";
+
+import AuthContext from "./context/AuthContext";
+import PrivateRoute from "./components/PrivateRoute";
+import UpdateUserPage from "./components/UpdateUser";
+import DeleteUserPage from "./components/DeleteUser";
+import CreateClassPage from "./components/CreateClass";
 
 function App() {
+  const [auth, setAuth] = useState({ loggedIn: false });
+
   return (
     <div className="App">
-      <ResponsiveAppBar />
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/users" element={<UserPage />} />
-      </Routes>
+      <AuthContext.Provider value={{ auth, setAuth }}>
+        <ResponsiveAppBar />
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          {/* <Route element={<PrivateRoute />}> */}
+          <Route path="/Users" element={<UserPage />} />
+          <Route path="/UpdateUser/:userId" element={<UpdateUserPage />} />
+          <Route path="/DeleteUser/:userId" element={<DeleteUserPage />} />
+          <Route path="/Classes" element={<ClassPage />} />
+          <Route path="/CreateClass" element={<CreateClassPage />} />
+
+          {/* </Route> */}
+        </Routes>
+      </AuthContext.Provider>
     </div>
   );
 }
