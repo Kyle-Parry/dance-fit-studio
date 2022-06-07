@@ -63,8 +63,7 @@ router.post(
   "/updateUser",
 
   async (req, res) => {
-    const accountLevel = req.accountLevel;
-    const userId = req.userId;
+    const { accountLevel, userId } = req.body;
 
     if (accountLevel && userId) {
       try {

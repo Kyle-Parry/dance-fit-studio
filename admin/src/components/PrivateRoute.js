@@ -4,8 +4,7 @@ import AuthContext from "../context/AuthContext";
 
 const useAuth = () => {
   const { auth } = useContext(AuthContext);
-  console.log(auth);
-  return auth && auth.loggedin;
+  return auth && auth.loggedIn;
 };
 
 const PrivateRoute = () => {

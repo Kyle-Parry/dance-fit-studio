@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,8 +11,9 @@ import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import AuthContext from "../context/AuthContext";
 
-const pages = ["Users", "Classes"];
+const pages = ["users", "Classes"];
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
 
@@ -24,7 +25,7 @@ const ResponsiveAppBar = () => {
     setAnchorElNav(null);
   };
   let navigate = useNavigate();
-  const [isLogged, setisLogged] = useState(false);
+  const { auth, setAuth } = useContext(AuthContext);
 
   const logout = () => {
     axios(
@@ -34,12 +35,21 @@ const ResponsiveAppBar = () => {
         withCredentials: true,
       },
       navigate("/"),
-      setisLogged(false)
+      setAuth({ loggedIn: false })
     );
   };
 
+  let signout;
+  if (auth.loggedIn) {
+    signout = (
+      <Button onClick={logout} color="inherit">
+        Logout
+      </Button>
+    );
+  }
+
   let toggleNavBar;
-  if (isLogged) {
+  if (auth.loggedIn) {
     toggleNavBar = (
       <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
         <IconButton
@@ -87,7 +97,7 @@ const ResponsiveAppBar = () => {
     );
   }
   let navBar;
-  if (isLogged) {
+  if (auth.loggedIn) {
     navBar = (
       <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
         {pages.map((page) => (
@@ -111,49 +121,7 @@ const ResponsiveAppBar = () => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: "block", md: "none" },
-              }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">
-                    <Link
-                      style={{ textDecoration: "inherit", color: "inherit" }}
-                      to={`/${page}`}
-                    >
-                      {page}
-                    </Link>
-                  </Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+          {toggleNavBar}
           <Typography
             variant="h5"
             noWrap
@@ -172,25 +140,8 @@ const ResponsiveAppBar = () => {
           >
             Dance Fit Studio
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                <Link
-                  style={{ textDecoration: "inherit", color: "inherit" }}
-                  to={`/${page}`}
-                >
-                  {page}
-                </Link>
-              </Button>
-            ))}
-          </Box>
-          <Button onClick={logout} color="inherit">
-            Logout
-          </Button>
+          {navBar}
+          {signout}
         </Toolbar>
       </Container>
     </AppBar>

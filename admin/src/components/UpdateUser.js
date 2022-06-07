@@ -70,7 +70,7 @@ export default function UpdateUserPage() {
             id="userId"
             label="userId"
             value={userId}
-            readonly
+            readOnly
             sx={{ visibility: "hidden" }}
           />
           <FormControl sx={{ width: 100 }}>

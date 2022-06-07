@@ -20,7 +20,7 @@ export default function LoginPage() {
 
   const login = async (e) => {
     e.preventDefault();
-    e.stopPropagation();
+
     try {
       const response = await axios({
         method: "post",
@@ -32,7 +32,7 @@ export default function LoginPage() {
         },
       }).then((response) => {
         setAuth({ loggedIn: true });
-        console.log(auth);
+        navigate("/Users");
       });
     } catch (error) {
       if (!error.response) {

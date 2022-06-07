@@ -65,7 +65,7 @@ app.use(function (req, res, next) {
     res.setHeader("Access-Control-Allow-Origin", origin);
   }
 
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUSH, DELETE");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST");
   res.setHeader(
     "Access-Control-Allow-Headers",
     "X-Requested-With,content-type, Accept"

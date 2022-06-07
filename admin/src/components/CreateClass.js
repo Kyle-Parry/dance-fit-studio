@@ -61,16 +61,16 @@ export default function CreateClassPage() {
           autoComplete="off"
         >
           <Typography
-            variant="h4"
+            variant="h6"
             component="div"
             gutterBottom
             sx={{
               textAlign: "center",
-              paddingTop: "20%",
-              paddingBottom: "20%",
+              paddingTop: "5%",
+              paddingBottom: "5%",
             }}
           >
-            Dance Fit Studio Admin
+            Create Class
           </Typography>
 
           <TextField
@@ -88,6 +88,14 @@ export default function CreateClassPage() {
             style={{ minWidth: 300, resize: "none" }}
             onChange={(e) => setCreateDescription(e.target.value)}
             required
+          />
+          <input
+            type="date"
+            onChange={(e) => setCreateClassDate(e.target.value)}
+          />
+          <input
+            type="time"
+            onChange={(e) => setCreateClassTime(e.target.value)}
           />
 
           <Typography
