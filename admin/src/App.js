@@ -21,7 +21,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LoginPage />} />
           <Route element={<PrivateRoute />}>
-            <Route path="users" element={<UserPage />} />
+            <Route path="/Users" element={<UserPage />} />
             <Route path="/UpdateUser/:userId" element={<UpdateUserPage />} />
             <Route path="/DeleteUser/:userId" element={<DeleteUserPage />} />
             <Route path="/Classes" element={<ClassPage />} />

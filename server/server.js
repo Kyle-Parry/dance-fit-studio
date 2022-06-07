@@ -9,6 +9,7 @@ const local = require("./passport-config.js");
 const passport = require("passport");
 const db = require("./database");
 const path = require("path");
+const ipfilter = require("express-ipfilter").IpFilter;
 
 const store = new session.MemoryStore();
 const app = express();
@@ -100,8 +101,11 @@ app.use((req, res, next) => {
   }
 });
 
+// Allow the following IPs
+const ips = ["127.0.0.1"];
+
 app.use(express.static("frontend"));
-app.use(express.static("admin"));
+app.use(ipfilter(ips, { mode: "allow" }), express.static("admin"));
 
 // links to all routes
 const usersRoutes = require("./routes/users.js");
@@ -177,9 +181,6 @@ function checkNotAdmin(req, res, next) {
 
 const adminRoute = require("./routes/admin.js");
 app.use("/admin", adminRoute);
-app.get("/admin/*", checkNotAdmin, (req, res) => {
-  res.status(401);
-});
 
 // server starting message
 app.listen(port, () =>
