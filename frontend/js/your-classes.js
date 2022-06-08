@@ -11,7 +11,7 @@ fetch(`/bookings/${userId}`)
     for (let booking of bookings) {
       bookingList.innerHTML += `
         <li class="list-group-item d-flex justify-content-between">
-              <span>${booking.classType} ${booking.date} ${booking.classTime}
+              <span>${booking.classType} ${booking.date} ${booking.time}
               </span>
               <a class="btn btn-primary bg-danger btn-sm" href="cancel?id=${booking.bookingNumber}">
                 Cancel

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import axios from "axios";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
@@ -13,7 +13,7 @@ import TextField from "@mui/material/TextField";
 
 export default function UpdateUserPage() {
   const { userId } = useParams();
-  const navigate = useNavigate;
+  const navigate = useNavigate();
   const [updateAccountLevel, setAccountLevel] = useState("");
 
   const handleChange = (event) => {
@@ -22,7 +22,7 @@ export default function UpdateUserPage() {
 
   const updateUser = async (e) => {
     e.preventDefault();
-    console.log("working");
+
     try {
       const response = await axios({
         method: "POST",
@@ -30,9 +30,8 @@ export default function UpdateUserPage() {
 
         data: { accountLevel: updateAccountLevel, userId: userId },
       }).then((response) => {
-        console.log(response);
+        navigate("../Users", { replace: true });
       });
-      console.log("still working");
     } catch (error) {
       if (!error.response) {
         console.log("No Server Response");
@@ -97,7 +96,11 @@ export default function UpdateUserPage() {
             <Button type="submit" variant="contained" sx={{ margin: "20px" }}>
               Update
             </Button>
-            <Button variant="contained" sx={{ margin: "20px" }}>
+            <Button
+              variant="contained"
+              onClick={() => navigate("../Users", { replace: true })}
+              sx={{ margin: "20px" }}
+            >
               Cancel
             </Button>
           </div>

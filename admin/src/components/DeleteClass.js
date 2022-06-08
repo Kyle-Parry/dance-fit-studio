@@ -7,21 +7,21 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 
-export default function DeleteUserPage() {
-  const { userId } = useParams();
+export default function DeleteClassPage() {
+  const { classID } = useParams();
   const navigate = useNavigate();
 
-  const deleteUser = async (e) => {
+  const deleteClass = async (e) => {
     e.preventDefault();
 
     try {
       const response = await axios({
         method: "POST",
-        url: "http://localhost:8080/admin/deleteUser",
+        url: "http://localhost:8080/admin/deleteClass",
 
-        data: { userId: userId },
+        data: { classID: classID },
       }).then((response) => {
-        navigate("../Users", { replace: true });
+        navigate("../Classes", { replace: true });
       });
     } catch (error) {
       if (!error.response) {
@@ -40,7 +40,7 @@ export default function DeleteUserPage() {
       <Container maxWidth="sm">
         <Box
           component="form"
-          onSubmit={deleteUser}
+          onSubmit={deleteClass}
           sx={{
             display: "flex",
             bgcolor: "#cfe8fc",
@@ -55,9 +55,9 @@ export default function DeleteUserPage() {
           autoComplete="off"
         >
           <TextField
-            id="userId"
-            label="userId"
-            value={userId}
+            id="classID"
+            label="classID"
+            value={classID}
             readOnly
             sx={{ visibility: "hidden" }}
           />
@@ -72,7 +72,7 @@ export default function DeleteUserPage() {
             </Button>
             <Button
               variant="contained"
-              onClick={() => navigate("../Users", { replace: true })}
+              onClick={() => navigate("../Classes", { replace: true })}
               sx={{ margin: "20px" }}
             >
               Cancel

@@ -6,14 +6,15 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 
-export default function CreateClassPage() {
+export default function UpdateClassPage() {
+  const { classID } = useParams();
   const [errMsg, setErrMsg] = useState("");
   const [CreateClassType, setCreateClassType] = useState("");
   const [CreateDescription, setCreateDescription] = useState("");
@@ -21,6 +22,7 @@ export default function CreateClassPage() {
   const [CreateClassTime, setCreateClassTime] = useState("");
   const [CreateImgID, setCreateImgID] = useState("");
   const [imgs, setImgs] = useState([]);
+  const [updateClass, setUpdateClass] = useState([]);
 
   const navigate = useNavigate();
 
@@ -39,6 +41,21 @@ export default function CreateClassPage() {
       }
     };
     fetchImgs();
+  }, []);
+  useEffect(() => {
+    const fetchClass = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/admin/classes/${classID}`
+        );
+        if (response && response.data) setUpdateClass(response.data);
+      } catch (error) {
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      }
+    };
+    fetchClass();
   }, []);
 
   const createClass = async (e) => {
@@ -97,13 +114,14 @@ export default function CreateClassPage() {
               paddingTop: "5%",
             }}
           >
-            Create Class
+            Update Class
           </Typography>
+
           <TextField
             required
             id="classType"
             label="Class Type"
-            placeholder="Class Type"
+            value="test"
             sx={{ bgcolor: "#fff", marginTop: "30px", borderRadius: "5px" }}
             onChange={(e) => setCreateClassType(e.target.value)}
           />
@@ -158,6 +176,12 @@ export default function CreateClassPage() {
               ))}
             </Select>
           </FormControl>
+          <TextField
+            required
+            type="date-time-local"
+            sx={{ bgcolor: "#fff", marginTop: "30px", borderRadius: "5px" }}
+            onChange={(e) => setCreateClassDate(e.target.value)}
+          />
           <Typography
             variant="p"
             component="div"

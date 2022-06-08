@@ -66,15 +66,29 @@ export default function ClassPage() {
                 </Typography>
                 <Typography variant="h5" component="div"></Typography>
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                  {clas.date}, {clas.classTime}
+                  {clas.date}, {clas.time}
                 </Typography>
                 <Typography variant="body2">{clas.Description}</Typography>
               </CardContent>
               <CardActions>
-                <Button size="small">Cancel Class</Button>
+                <Button size="small">
+                  <Link
+                    style={{ textDecoration: "inherit", color: "inherit" }}
+                    to={`/UpdateClass/${clas.classID}`}
+                  >
+                    Update Class
+                  </Link>
+                </Button>
               </CardActions>
               <CardActions>
-                <Button size="small">Delete</Button>
+                <Button size="small">
+                  <Link
+                    style={{ textDecoration: "inherit", color: "inherit" }}
+                    to={`/DeleteClass/${clas.classID}`}
+                  >
+                    Delete Class
+                  </Link>
+                </Button>
               </CardActions>
             </Card>
           ))}

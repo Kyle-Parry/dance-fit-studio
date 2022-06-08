@@ -10,6 +10,8 @@ import PrivateRoute from "./components/PrivateRoute";
 import UpdateUserPage from "./components/UpdateUser";
 import DeleteUserPage from "./components/DeleteUser";
 import CreateClassPage from "./components/CreateClass";
+import DeleteClassPage from "./components/DeleteClass";
+import UpdateClassPage from "./components/UpdateClass";
 
 function App() {
   const [auth, setAuth] = useState({ loggedIn: false });
@@ -20,13 +22,15 @@ function App() {
         <ResponsiveAppBar />
         <Routes>
           <Route path="/" element={<LoginPage />} />
-          <Route element={<PrivateRoute />}>
-            <Route path="/Users" element={<UserPage />} />
-            <Route path="/UpdateUser/:userId" element={<UpdateUserPage />} />
-            <Route path="/DeleteUser/:userId" element={<DeleteUserPage />} />
-            <Route path="/Classes" element={<ClassPage />} />
-            <Route path="/CreateClass" element={<CreateClassPage />} />
-          </Route>
+          {/* <Route element={<PrivateRoute />}> */}
+          <Route path="Users" element={<UserPage />} />
+          <Route path="UpdateUser/:userId" element={<UpdateUserPage />} />
+          <Route path="DeleteUser/:userId" element={<DeleteUserPage />} />
+          <Route path="Classes" element={<ClassPage />} />
+          <Route path="UpdateClass/:classID" element={<UpdateClassPage />} />
+          <Route path="DeleteClass/:classID" element={<DeleteClassPage />} />
+          <Route path="CreateClass" element={<CreateClassPage />} />
+          {/* </Route> */}
         </Routes>
       </AuthContext.Provider>
     </div>

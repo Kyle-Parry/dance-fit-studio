@@ -30,7 +30,7 @@ router.get("/", async (req, res) => {
 router.get("/:userId", async (req, res) => {
   const userId = req.user[0].userId;
   const results = await db.query(
-    `SELECT b.bookingNumber, b.userId, b.bookingNumber, b.classID, c.classType, c.classTime, DATE_FORMAT(c.classDate, "%W %M %e %Y") AS date
+    `SELECT b.bookingNumber, b.userId, b.bookingNumber, b.classID, c.classType, TIME_FORMAT(c.classTime, "%h %i %p") AS time, DATE_FORMAT(c.classDate, "%W %M %e %Y") AS date
   FROM bookings b
   INNER JOIN classes c ON (c.classID = b.classID)
   WHERE b.userId = ? AND b.cancelDate IS null`,

@@ -13,7 +13,7 @@ fetch(`/classes`)
         alt="${clas.imgAlt}"
       />
       <div class="card-body">
-        <h1 class="card-title">${clas.classType} ${clas.date} ${clas.classTime}</h1>
+        <h1 class="card-title">${clas.classType} ${clas.date} ${clas.time}</h1>
         <h4></h4>
         <p class="card-text">${clas.Description}</p>
     </div>

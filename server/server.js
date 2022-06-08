@@ -102,10 +102,10 @@ app.use((req, res, next) => {
 });
 
 // Allow the following IPs
-const ips = ["127.0.0.1"];
+const ips = ["192.168.1.2"];
 
 app.use(express.static("frontend"));
-app.use(ipfilter(ips, { mode: "allow" }), express.static("admin"));
+app.use(express.static("admin"));
 
 // links to all routes
 const usersRoutes = require("./routes/users.js");

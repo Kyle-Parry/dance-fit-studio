@@ -87,11 +87,11 @@ router.post(
 
 // delete user middleware
 router.post("/deleteUser", async (req, res) => {
-  const email = req.body;
-  if (email) {
+  const { userId } = req.body;
+  if (userId) {
     try {
-      const result = await db.query(`DELETE FROM users WHERE email = ?`, [
-        email,
+      const result = await db.query(`DELETE FROM users WHERE userId = ?`, [
+        userId,
       ]);
       if (result.affectedRows > 0) {
         res.status(204).send({ msg: "User Deleted" });
@@ -106,79 +106,11 @@ router.post("/deleteUser", async (req, res) => {
   }
 });
 
-// booking admin middleware
-router.get("/bookings", async (req, res) => {
-  const results = await db.query(`SELECT * FROM bookings`);
-  res.status(200).send(results);
-});
-
-router.post("/createBooking", async (req, res) => {
-  const userId = req.params.id;
-  const classID = req.body.classID;
-  if (userId && classID) {
-    try {
-      const result = await db.query(
-        `INSERT INTO bookings (userId, classID) VALUES (?, ?);`,
-        [userId, classID]
-      );
-      res.status(201).send({ msg: "Created Booking" });
-      console.log(result);
-    } catch (err) {
-      console.log(err);
-      res.status(500).send({ msg: "Failed to Create Booking" });
-    }
-  }
-});
-
-// update booking middleware
-router.post("/updateBooking", async (req, res) => {
-  const bookingNumber = req.body.bookingNumber;
-  if (bookingNumber) {
-    try {
-      const result = await db.query(
-        `UPDATE bookings SET cancelDate = NOW() WHERE bookingNumber = ?`,
-        [bookingNumber]
-      );
-      if (result.affectedRows > 0) {
-        res.status(200).send({ msg: "Booking Updated" });
-        console.log(result);
-      } else {
-        res.status(404).send({ msg: "Booking Not Found" });
-      }
-    } catch (err) {
-      console.log(err);
-      res.status(500).send({ msg: "Update Failed" });
-    }
-  }
-});
-
-// delete booking middleware
-router.post("/deleteBooking", async (req, res) => {
-  const userId = req.body;
-  if (userId) {
-    try {
-      const result = await db.query(
-        `DELETE FROM bookings WHERE bookingNumber = ?`,
-        [userId]
-      );
-      if (result.affectedRows > 0) {
-        res.status(204).send({ msg: "Booking Deleted" });
-        console.log(result);
-      } else {
-        res.status(404).send({ msg: "Booking Not Found" });
-      }
-    } catch (err) {
-      console.log(err);
-      res.status(500).send({ msg: "Delete Failed" });
-    }
-  }
-});
-
 // class admin middleware
 // all routes start with /classes
 router.get("/classes", async (req, res) => {
   const results =
-    await db.query(`SELECT c.classID, c.classType, c.Description, c.classTime, i.imgPath, i.imgAlt, DATE_FORMAT(c.classDate, "%W %M %e %Y") AS date
+    await db.query(`SELECT c.classID, c.classType, c.Description, TIME_FORMAT(c.classTime, "%h %i %p") AS time, i.imgPath, i.imgAlt, DATE_FORMAT(c.classDate, "%W %M %e %Y") AS date
     FROM classes c 
     INNER JOIN images i ON (i.imgID = c.imgID)`);
   res.status(200).send(results);
@@ -195,14 +127,14 @@ router.get("/classes/:classID", async (req, res) => {
 
 // create class middleware
 router.post("/createClass", async (req, res) => {
-  const { classType, description, classSchedule } = req.body;
-  const userId = req.user[0].userId;
-  if (classType && description && classSchedule && userId) {
+  const { classType, description, classDate, classTime, imgID } = req.body;
+
+  if (classType && description && classDate && classTime && imgID) {
     try {
       const result = await db.query(
-        `INSERT INTO classes (classType, description, classSchedule, userId)
-          VALUES (?, ?, ?, ?)`,
-        [classType, description, classSchedule, userId]
+        `INSERT INTO classes (classType, description, classDate, classTime, imgID)
+          VALUES (?, ?, ?, ?, ?)`,
+        [classType, description, classDate, classTime, imgID]
       );
       res.status(201).send({ msg: "Created Class" });
       console.log(result);
@@ -268,6 +200,11 @@ router.post("/deleteClass", async (req, res) => {
       res.status(500).send({ msg: "Delete Failed" });
     }
   }
+});
+
+router.get("/imgs", async (req, res) => {
+  const results = await db.query(`SELECT * FROM images`);
+  res.status(200).json(results);
 });
 
 module.exports = router;
