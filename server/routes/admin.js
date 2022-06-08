@@ -162,7 +162,6 @@ router.post(
   "/updateClass",
   ipfilter(ips, { mode: "allow" }),
   async (req, res) => {
-    const classID = req.params.classID;
     const {
       classType,
       description,
@@ -170,19 +169,21 @@ router.post(
       classTime,
       imgID,
       classCancelled,
+      classID,
     } = req.body;
+
     if (
-      classID &&
       classType &&
       description &&
       classDate &&
       classTime &&
       imgID &&
-      classCancelled
+      classCancelled &&
+      classID
     ) {
       try {
         const result = await db.query(
-          `UPDATE classes SET classType = ?, description = ?, classDate = ?, classTime = ?, classCancelled = ? WHERE classID = ?`,
+          `UPDATE classes SET classType = ?, Description = ?, classDate = ?, classTime = ?,imgID = ?, classCancelled = ? WHERE classID = ?`,
           [
             classType,
             description,

@@ -63,11 +63,12 @@ export default function UpdateClassPage() {
 
   const updateClassPost = async (e) => {
     e.preventDefault();
-    e.stopPropagation();
+
     try {
       const response = await axios({
-        method: "post",
+        method: "POST",
         url: "http://localhost:8080/admin/updateClass",
+
         data: {
           classID: classID,
           classType: CreateClassType,
@@ -75,12 +76,12 @@ export default function UpdateClassPage() {
           classDate: CreateClassDate,
           classTime: CreateClassTime,
           imgID: CreateImgID,
-          classCancel: updateCancel,
+          classCancelled: updateCancel,
         },
       }).then((response) => {
+        console.log("testing");
         navigate("../Classes");
       });
-      console.log(response);
     } catch (error) {
       if (!error.response) {
         setErrMsg("No Server Response");
