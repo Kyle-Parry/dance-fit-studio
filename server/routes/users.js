@@ -22,14 +22,6 @@ checkRules = (req, res, next) => {
   next();
 };
 
-// all routes start with /users
-router.get("/all", async (req, res) => {
-  const results = await db.query(
-    `SELECT userId, email, firstName, lastName, accountLevel FROM users`
-  );
-  res.status(200).json(results);
-});
-
 // get user by email
 router.get("/:userId", async (req, res) => {
   const userId = req.user[0].userId;

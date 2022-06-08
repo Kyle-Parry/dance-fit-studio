@@ -102,7 +102,6 @@ app.use((req, res, next) => {
 });
 
 // Allow the following IPs
-const ips = ["192.168.1.2"];
 
 app.use(express.static("frontend"));
 app.use(express.static("admin"));

@@ -2,21 +2,15 @@ const { Router } = require("express");
 const db = require("../database");
 const { body, validationResult } = require("express-validator");
 const passport = require("passport");
+const ipfilter = require("express-ipfilter").IpFilter;
 
 const router = Router();
 
-function checkNotAdmin(req, res, next) {
-  if (req.isAuthenticated() && req.user[0].accountLevel == "Admin") {
-    //req.isAuthenticated() will return true if user is logged in
-    next();
-  } else {
-    res.redirect("/");
-  }
-}
+const ips = ["::1"];
 
 // user admin middleware
 // all routes start with /users
-router.get("/users", async (req, res) => {
+router.get("/users", ipfilter(ips, { mode: "allow" }), async (req, res) => {
   const results = await db.query(
     `SELECT userId, email, firstName, lastName, accountLevel FROM users`
   );
@@ -24,17 +18,22 @@ router.get("/users", async (req, res) => {
 });
 
 // get user by email
-router.get("/users/:userId", async (req, res) => {
-  const userId = req.params.userId;
-  const results = await db.query(
-    `SELECT userId, email, firstName, lastName, accountLevel FROM users WHERE userId = ?`,
-    [userId]
-  );
-  res.status(200).json(results);
-});
+router.get(
+  "/users/:userId",
+  ipfilter(ips, { mode: "allow" }),
+  async (req, res) => {
+    const userId = req.params.userId;
+    const results = await db.query(
+      `SELECT userId, email, firstName, lastName, accountLevel FROM users WHERE userId = ?`,
+      [userId]
+    );
+    res.status(200).json(results);
+  }
+);
 // create user middleware
 router.post(
   "/createUser",
+  ipfilter(ips, { mode: "allow" }),
   userValidationRules,
   checkRules,
   async (req, res) => {
@@ -61,6 +60,7 @@ router.post(
 
 router.post(
   "/updateUser",
+  ipfilter(ips, { mode: "allow" }),
 
   async (req, res) => {
     const { accountLevel, userId } = req.body;
@@ -86,29 +86,33 @@ router.post(
 );
 
 // delete user middleware
-router.post("/deleteUser", async (req, res) => {
-  const { userId } = req.body;
-  if (userId) {
-    try {
-      const result = await db.query(`DELETE FROM users WHERE userId = ?`, [
-        userId,
-      ]);
-      if (result.affectedRows > 0) {
-        res.status(204).send({ msg: "User Deleted" });
-        console.log(result);
-      } else {
-        res.status(404).send({ msg: "User Not Found" });
+router.post(
+  "/deleteUser",
+  ipfilter(ips, { mode: "allow" }),
+  async (req, res) => {
+    const { userId } = req.body;
+    if (userId) {
+      try {
+        const result = await db.query(`DELETE FROM users WHERE userId = ?`, [
+          userId,
+        ]);
+        if (result.affectedRows > 0) {
+          res.status(204).send({ msg: "User Deleted" });
+          console.log(result);
+        } else {
+          res.status(404).send({ msg: "User Not Found" });
+        }
+      } catch (err) {
+        console.log(err);
+        res.status(500).send({ msg: "Delete Failed" });
       }
-    } catch (err) {
-      console.log(err);
-      res.status(500).send({ msg: "Delete Failed" });
     }
   }
-});
+);
 
 // class admin middleware
 // all routes start with /classes
-router.get("/classes", async (req, res) => {
+router.get("/classes", ipfilter(ips, { mode: "allow" }), async (req, res) => {
   const results =
     await db.query(`SELECT c.classID, c.classType, c.Description, TIME_FORMAT(c.classTime, "%h %i %p") AS time, i.imgPath, i.imgAlt, DATE_FORMAT(c.classDate, "%W %M %e %Y") AS date
     FROM classes c 
@@ -117,92 +121,118 @@ router.get("/classes", async (req, res) => {
 });
 
 // get class by classID
-router.get("/classes/:classID", async (req, res) => {
-  const classID = req.params.classID;
-  const results = await db.query(`SELECT * FROM classes WHERE classID = ?`, [
-    classID,
-  ]);
-  res.status(200).json(results);
-});
+router.get(
+  "/classes/:classID",
+  ipfilter(ips, { mode: "allow" }),
+  async (req, res) => {
+    const classID = req.params.classID;
+    const results = await db.query(`SELECT * FROM classes WHERE classID = ?`, [
+      classID,
+    ]);
+    res.status(200).json(results);
+  }
+);
 
 // create class middleware
-router.post("/createClass", async (req, res) => {
-  const { classType, description, classDate, classTime, imgID } = req.body;
+router.post(
+  "/createClass",
+  ipfilter(ips, { mode: "allow" }),
+  async (req, res) => {
+    const { classType, description, classDate, classTime, imgID } = req.body;
 
-  if (classType && description && classDate && classTime && imgID) {
-    try {
-      const result = await db.query(
-        `INSERT INTO classes (classType, description, classDate, classTime, imgID)
+    if (classType && description && classDate && classTime && imgID) {
+      try {
+        const result = await db.query(
+          `INSERT INTO classes (classType, description, classDate, classTime, imgID)
           VALUES (?, ?, ?, ?, ?)`,
-        [classType, description, classDate, classTime, imgID]
-      );
-      res.status(201).send({ msg: "Created Class" });
-      console.log(result);
-    } catch (err) {
-      console.log(err);
-      res.status(500).send({ msg: "Failed to Create Class" });
+          [classType, description, classDate, classTime, imgID]
+        );
+        res.status(201).send({ msg: "Created Class" });
+        console.log(result);
+      } catch (err) {
+        console.log(err);
+        res.status(500).send({ msg: "Failed to Create Class" });
+      }
     }
   }
-});
+);
 
 // update class middleware
-router.post("/updateClass", async (req, res) => {
-  const {
-    classID,
-    classType,
-    description,
-    classSchedule,
-    classCancelled,
-    userId,
-  } = req.body;
-  if (
-    classID &&
-    classType &&
-    description &&
-    classSchedule &&
-    classCancelled &&
-    userId
-  ) {
-    try {
-      const result = await db.query(
-        `UPDATE classes SET classType = ?, description = ?, classSchedule = ?, classCancelled = ?, userId = ? WHERE classID = ?`,
-        [classType, description, classSchedule, classCancelled, userId, classID]
-      );
-      if (result.affectedRows > 0) {
-        res.status(200).send({ msg: "Class Updated" });
-        console.log(result);
-      } else {
-        res.status(404).send({ msg: "Class Not Found" });
+router.post(
+  "/updateClass",
+  ipfilter(ips, { mode: "allow" }),
+  async (req, res) => {
+    const classID = req.params.classID;
+    const {
+      classType,
+      description,
+      classDate,
+      classTime,
+      imgID,
+      classCancelled,
+    } = req.body;
+    if (
+      classID &&
+      classType &&
+      description &&
+      classDate &&
+      classTime &&
+      imgID &&
+      classCancelled
+    ) {
+      try {
+        const result = await db.query(
+          `UPDATE classes SET classType = ?, description = ?, classDate = ?, classTime = ?, classCancelled = ? WHERE classID = ?`,
+          [
+            classType,
+            description,
+            classDate,
+            classTime,
+            imgID,
+            classCancelled,
+            classID,
+          ]
+        );
+        if (result.affectedRows > 0) {
+          res.status(200).send({ msg: "Class Updated" });
+          console.log(result);
+        } else {
+          res.status(404).send({ msg: "Class Not Found" });
+        }
+      } catch (err) {
+        console.log(err);
+        res.status(500).send({ msg: "Update Failed" });
       }
-    } catch (err) {
-      console.log(err);
-      res.status(500).send({ msg: "Update Failed" });
     }
   }
-});
+);
 
 // delete class middleware
-router.post("/deleteClass", async (req, res) => {
-  const classID = req.body;
-  if (classID) {
-    try {
-      const result = await db.query(`DELETE FROM classes WHERE classID = ?`, [
-        classID,
-      ]);
-      if (result.affectedRows > 0) {
-        res.status(204).send({ msg: "Class Deleted" });
-        console.log(result);
-      } else {
-        res.status(404).send({ msg: "Class Not Found" });
+router.post(
+  "/deleteClass",
+  ipfilter(ips, { mode: "allow" }),
+  async (req, res) => {
+    const { classID } = req.body;
+    if (classID) {
+      try {
+        const result = await db.query(`DELETE FROM classes WHERE classID = ?`, [
+          classID,
+        ]);
+        if (result.affectedRows > 0) {
+          res.status(204).send({ msg: "Class Deleted" });
+          console.log(result);
+        } else {
+          res.status(404).send({ msg: "Class Not Found" });
+        }
+      } catch (err) {
+        console.log(err);
+        res.status(500).send({ msg: "Delete Failed" });
       }
-    } catch (err) {
-      console.log(err);
-      res.status(500).send({ msg: "Delete Failed" });
     }
   }
-});
+);
 
-router.get("/imgs", async (req, res) => {
+router.get("/imgs", ipfilter(ips, { mode: "allow" }), async (req, res) => {
   const results = await db.query(`SELECT * FROM images`);
   res.status(200).json(results);
 });

@@ -23,6 +23,7 @@ export default function UpdateClassPage() {
   const [CreateImgID, setCreateImgID] = useState("");
   const [imgs, setImgs] = useState([]);
   const [updateClass, setUpdateClass] = useState([]);
+  const [updateCancel, setUpdateCancel] = useState("");
 
   const navigate = useNavigate();
 
@@ -48,7 +49,9 @@ export default function UpdateClassPage() {
         const response = await axios.get(
           `http://localhost:8080/admin/classes/${classID}`
         );
-        if (response && response.data) setUpdateClass(response.data);
+        if (response && response.data) {
+          setUpdateClass(response.data);
+        }
       } catch (error) {
         console.log(error.response.data);
         console.log(error.response.status);
@@ -58,23 +61,26 @@ export default function UpdateClassPage() {
     fetchClass();
   }, []);
 
-  const createClass = async (e) => {
+  const updateClassPost = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     try {
       const response = await axios({
         method: "post",
-        url: "http://localhost:8080/admin/createClass",
+        url: "http://localhost:8080/admin/updateClass",
         data: {
+          classID: classID,
           classType: CreateClassType,
           description: CreateDescription,
           classDate: CreateClassDate,
           classTime: CreateClassTime,
           imgID: CreateImgID,
+          classCancel: updateCancel,
         },
       }).then((response) => {
-        navigate("/Classes");
+        navigate("../Classes");
       });
+      console.log(response);
     } catch (error) {
       if (!error.response) {
         setErrMsg("No Server Response");
@@ -92,7 +98,7 @@ export default function UpdateClassPage() {
       <Container maxWidth="sm">
         <Box
           component="form"
-          onSubmit={createClass}
+          onSubmit={updateClassPost}
           sx={{
             display: "flex",
             bgcolor: "#cfe8fc",
@@ -121,7 +127,6 @@ export default function UpdateClassPage() {
             required
             id="classType"
             label="Class Type"
-            value="test"
             sx={{ bgcolor: "#fff", marginTop: "30px", borderRadius: "5px" }}
             onChange={(e) => setCreateClassType(e.target.value)}
           />
@@ -178,9 +183,9 @@ export default function UpdateClassPage() {
           </FormControl>
           <TextField
             required
-            type="date-time-local"
+            type="datetime-local"
             sx={{ bgcolor: "#fff", marginTop: "30px", borderRadius: "5px" }}
-            onChange={(e) => setCreateClassDate(e.target.value)}
+            onChange={(e) => setUpdateCancel(e.target.value)}
           />
           <Typography
             variant="p"
@@ -201,11 +206,11 @@ export default function UpdateClassPage() {
             }}
           >
             <Button type="submit" variant="contained" sx={{ margin: "30px" }}>
-              Create
+              Update
             </Button>
             <Button
               variant="contained"
-              onClick={() => navigate("/Classes")}
+              onClick={() => navigate("../Classes")}
               sx={{ margin: "20px" }}
             >
               Cancel

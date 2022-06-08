@@ -89,26 +89,4 @@ router.post("/update", async (req, res) => {
   }
 });
 
-// delete booking middleware
-router.post("/delete", async (req, res) => {
-  const userId = req.body;
-  if (userId) {
-    try {
-      const result = await db.query(
-        `DELETE FROM bookings WHERE bookingNumber = ?`,
-        [userId]
-      );
-      if (result.affectedRows > 0) {
-        res.status(204).send({ msg: "Booking Deleted" });
-        console.log(result);
-      } else {
-        res.status(404).send({ msg: "Booking Not Found" });
-      }
-    } catch (err) {
-      console.log(err);
-      res.status(500).send({ msg: "Delete Failed" });
-    }
-  }
-});
-
 module.exports = router;

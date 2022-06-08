@@ -22,6 +22,7 @@ export default function DeleteClassPage() {
         data: { classID: classID },
       }).then((response) => {
         navigate("../Classes", { replace: true });
+        console.log(classID);
       });
     } catch (error) {
       if (!error.response) {
@@ -29,7 +30,7 @@ export default function DeleteClassPage() {
       } else if (error.response?.status === 401) {
         console.log("Unauthorized");
       } else {
-        console.log("Delete Failed Failed");
+        console.log("Delete Failed");
       }
     }
   };

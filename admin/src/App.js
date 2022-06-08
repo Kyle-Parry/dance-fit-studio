@@ -22,15 +22,15 @@ function App() {
         <ResponsiveAppBar />
         <Routes>
           <Route path="/" element={<LoginPage />} />
-          {/* <Route element={<PrivateRoute />}> */}
-          <Route path="Users" element={<UserPage />} />
-          <Route path="UpdateUser/:userId" element={<UpdateUserPage />} />
-          <Route path="DeleteUser/:userId" element={<DeleteUserPage />} />
-          <Route path="Classes" element={<ClassPage />} />
-          <Route path="UpdateClass/:classID" element={<UpdateClassPage />} />
-          <Route path="DeleteClass/:classID" element={<DeleteClassPage />} />
-          <Route path="CreateClass" element={<CreateClassPage />} />
-          {/* </Route> */}
+          <Route element={<PrivateRoute />}>
+            <Route path="Users" element={<UserPage />} />
+            <Route path="UpdateUser/:userId" element={<UpdateUserPage />} />
+            <Route path="DeleteUser/:userId" element={<DeleteUserPage />} />
+            <Route path="Classes" element={<ClassPage />} />
+            <Route path="UpdateClass/:classID" element={<UpdateClassPage />} />
+            <Route path="DeleteClass/:classID" element={<DeleteClassPage />} />
+            <Route path="CreateClass" element={<CreateClassPage />} />
+          </Route>
         </Routes>
       </AuthContext.Provider>
     </div>
