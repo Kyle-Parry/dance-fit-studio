@@ -8,6 +8,43 @@ const router = Router();
 
 const ips = ["::1"];
 
+// validation rules
+createUserValidationRules = [
+  body("email").isEmail().trim().escape(),
+  body("password").isLength({ min: 5, max: 20 }).trim().escape(),
+  body("firstName").notEmpty().trim().escape(),
+  body("lastName").notEmpty().trim().escape(),
+];
+updateUserValidationRules = [
+  body("accountLevel").notEmpty().trim().escape(),
+  body("userId").notEmpty().trim().escape(),
+];
+deleteUserValidationRules = [body("userId").notEmpty().trim().escape()];
+
+createClassValidationRules = [
+  body("classType").notEmpty().trim().escape(),
+  body("description").notEmpty().trim().escape(),
+  body("classDate").notEmpty().trim().escape(),
+  body("classTime").trim().escape(),
+];
+updateClassValidationRules = [
+  body("classType").notEmpty().trim().escape(),
+  body("description").notEmpty().trim().escape(),
+  body("classDate").notEmpty().trim().escape(),
+  body("classTime").notEmpty().trim().escape(),
+  body("classCancelled").trim().escape(),
+];
+deleteClassValidationRules = [body("classID").notEmpty().trim().escape()];
+
+// check validation rules function
+checkRules = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  next();
+};
+
 // user admin middleware
 // all routes start with /users
 router.get("/users", ipfilter(ips, { mode: "allow" }), async (req, res) => {
@@ -34,7 +71,7 @@ router.get(
 router.post(
   "/createUser",
   ipfilter(ips, { mode: "allow" }),
-  userValidationRules,
+  createUserValidationRules,
   checkRules,
   async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
@@ -61,7 +98,8 @@ router.post(
 router.post(
   "/updateUser",
   ipfilter(ips, { mode: "allow" }),
-
+  updateUserValidationRules,
+  checkRules,
   async (req, res) => {
     const { accountLevel, userId } = req.body;
 
@@ -89,6 +127,8 @@ router.post(
 router.post(
   "/deleteUser",
   ipfilter(ips, { mode: "allow" }),
+  deleteUserValidationRules,
+  checkRules,
   async (req, res) => {
     const { userId } = req.body;
     if (userId) {
@@ -137,6 +177,8 @@ router.get(
 router.post(
   "/createClass",
   ipfilter(ips, { mode: "allow" }),
+  createClassValidationRules,
+  checkRules,
   async (req, res) => {
     const { classType, description, classDate, classTime, imgID } = req.body;
 
@@ -161,6 +203,8 @@ router.post(
 router.post(
   "/updateClass",
   ipfilter(ips, { mode: "allow" }),
+  updateClassValidationRules,
+  checkRules,
   async (req, res) => {
     const {
       classType,
@@ -211,6 +255,8 @@ router.post(
 // delete class middleware
 router.post(
   "/deleteClass",
+  deleteClassValidationRules,
+  checkRules,
   ipfilter(ips, { mode: "allow" }),
   async (req, res) => {
     const { classID } = req.body;
