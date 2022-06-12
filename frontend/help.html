@@ -7,6 +7,7 @@
       content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
     />
     <title>dancefit</title>
+    <link rel="manifest" href="manifest.json" />
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
     <link
       rel="stylesheet"
@@ -32,20 +33,35 @@
     <link rel="stylesheet" href="assets/css/Toggle-Switches.css" />
     <link rel="stylesheet" href="assets/css/spinner.css" />
     <script src="js/nav.js" defer></script>
-    <script src="js/your-classes.js"></script>
+    <script src="js/cancel-booking.js" defer></script>
   </head>
 
   <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-light navbar-expand-md bg-white"></nav>
-    <div class="container p-3">
-      <div class="card">
-        <div class="card-header d-flex flex-row justify-content-between">
-          <h5 class="mb-0">Your Classes</h5>
-          <h5 class="mb-0"><a href="/help">?</a></h5>
-        </div>
-        <div class="card-body">
-          <ul id="bookings" class="list-group"></ul>
-        </div>
+    <div class="container p-5 m-auto flex-grow-1">
+      <div class="row articles bg-white text-dark rounded">
+        <h1>Help</h1>
+        <br />
+        <h3>Your Bookings</h3>
+        <br />
+        <p>
+          The Your Bookings page displays all past and current bookings that
+          have been made on your account.
+        </p>
+        <br />
+        <p>
+          Each entry on this page is an individual booking that has been made.
+          Displaying what type of class is booked, what date the class is
+          scheduled for, what time the class will be held, and a button that can
+          be used to cancel your booking.
+        </p>
+        <br />
+        <p>
+          Upon clicking the cancel booking button it will take you to a page
+          that will display two additional buttons that will prompt you to
+          confirm that you would like to cancel this class of if you would like
+          to go back to the previous page.
+        </p>
       </div>
     </div>
     <footer id="footer" class="footer-basic mt-auto"></footer>

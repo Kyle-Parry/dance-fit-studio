@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -10,40 +10,48 @@ import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
+import * as yup from "yup";
+import { useFormik } from "formik";
 
 export default function UpdateUserPage() {
   const { userId } = useParams();
   const navigate = useNavigate();
-  const [updateAccountLevel, setAccountLevel] = useState("");
 
-  const handleChange = (event) => {
-    setAccountLevel(event.target.value);
-  };
+  const validationSchema = yup.object({
+    accountLevel: yup.string().required(),
+    userId: yup.string().required("Role is required"),
+  });
 
-  const updateUser = async (e) => {
-    e.preventDefault();
+  const formik = useFormik({
+    initialValues: {
+      accountLevel: "",
+      userId: userId,
+    },
+    validateOnBlur: true,
+    onSubmit: async (values) => {
+      try {
+        const response = await axios({
+          method: "POST",
+          url: "http://localhost:8080/admin/updateUser",
 
-    try {
-      const response = await axios({
-        method: "POST",
-        url: "http://localhost:8080/admin/updateUser",
-
-        data: { accountLevel: updateAccountLevel, userId: userId },
-      }).then((response) => {
-        navigate("../Users", { replace: true });
-      });
-    } catch (error) {
-      if (!error.response) {
-        console.log("No Server Response");
-      } else if (error.response?.status === 400) {
-        console.log("Missing Details");
-      } else if (error.response?.status === 401) {
-        console.log("Unauthorized");
-      } else {
-        console.log("Update Failed");
+          data: values,
+        }).then((response) => {
+          navigate("../Users", { replace: true });
+        });
+      } catch (error) {
+        if (!error.response) {
+          console.log("No Server Response");
+        } else if (error.response?.status === 400) {
+          console.log("Missing Details");
+        } else if (error.response?.status === 401) {
+          console.log("Unauthorized");
+        } else {
+          console.log("Update Failed");
+        }
       }
-    }
-  };
+    },
+    validationSchema: validationSchema,
+  });
 
   return (
     <React.Fragment>
@@ -51,7 +59,7 @@ export default function UpdateUserPage() {
       <Container maxWidth="sm">
         <Box
           component="form"
-          onSubmit={updateUser}
+          onSubmit={formik.handleSubmit}
           sx={{
             display: "flex",
             bgcolor: "#cfe8fc",
@@ -78,10 +86,17 @@ export default function UpdateUserPage() {
             <Select
               labelId="demo-simple-select-label"
               id="accountLevel"
-              value={updateAccountLevel}
               label="accountLevel"
-              onChange={handleChange}
-              required
+              value={formik.values.accountLevel}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.accountLevel &&
+                Boolean(formik.errors.accountLevel)
+              }
+              helperText={
+                formik.touched.accountLevel && formik.errors.accountLevel
+              }
             >
               <MenuItem value="user">User</MenuItem>
               <MenuItem value="Admin">Admin</MenuItem>

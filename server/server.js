@@ -9,7 +9,6 @@ const local = require("./passport-config.js");
 const passport = require("passport");
 const db = require("./database");
 const path = require("path");
-const ipfilter = require("express-ipfilter").IpFilter;
 
 const store = new session.MemoryStore();
 const app = express();
@@ -125,6 +124,9 @@ app.use("/bookings", bookingRoutes);
 const specialRoutes = require("./routes/special-occasions.js");
 app.use("/special", specialRoutes);
 
+const contactRoutes = require("./routes/contact.js");
+app.use("/contact", contactRoutes);
+
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend", "index.html"));
 });
@@ -143,7 +145,7 @@ app.get("/special-occasions", (req, res) => {
 app.get("/settings", checkAuthentication, (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend", "settings.html"));
 });
-app.get("/contact", (req, res) => {
+app.get("/contact-us", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend", "contact.html"));
 });
 app.get("/your-classes", checkAuthentication, (req, res) => {
@@ -154,6 +156,9 @@ app.get("/booking", checkAuthentication, (req, res) => {
 });
 app.get("/cancel", checkAuthentication, (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend", "cancel-booking.html"));
+});
+app.get("/help", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "help.html"));
 });
 
 function checkAuthentication(req, res, next) {

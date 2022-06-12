@@ -10,10 +10,10 @@ fetch(`/bookings/${userId}`)
 
     for (let booking of bookings) {
       bookingList.innerHTML += `
-        <li class="list-group-item d-flex justify-content-between">
+        <li class="list-group-item d-flex flex-column">
               <span>${booking.classType} ${booking.date} ${booking.time}
               </span>
-              <a class="btn btn-primary bg-danger btn-sm" href="cancel?id=${booking.bookingNumber}">
+              <a class="btn btn-primary bg-danger btn-sm" style="width: 100px" href="cancel?id=${booking.bookingNumber}">
                 Cancel
               </a>
             </li>

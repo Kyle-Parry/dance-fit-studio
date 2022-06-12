@@ -43,7 +43,14 @@ export default function UserPage() {
           }}
         >
           <Typography variant="h3">Users</Typography>
-          <Button size="small">Create User</Button>
+          <Button size="small">
+            <Link
+              style={{ textDecoration: "inherit", color: "inherit" }}
+              to={`/CreateUser`}
+            >
+              Create User
+            </Link>
+          </Button>
           {users.map((user) => (
             <Card
               variant="outlined"

@@ -12,6 +12,7 @@ import DeleteUserPage from "./components/DeleteUser";
 import CreateClassPage from "./components/CreateClass";
 import DeleteClassPage from "./components/DeleteClass";
 import UpdateClassPage from "./components/UpdateClass";
+import CreateUserPage from "./components/CreateUser";
 
 function App() {
   const [auth, setAuth] = useState({ loggedIn: false });
@@ -26,6 +27,7 @@ function App() {
             <Route path="Users" element={<UserPage />} />
             <Route path="UpdateUser/:userId" element={<UpdateUserPage />} />
             <Route path="DeleteUser/:userId" element={<DeleteUserPage />} />
+            <Route path="CreateUser" element={<CreateUserPage />} />
             <Route path="Classes" element={<ClassPage />} />
             <Route path="UpdateClass/:classID" element={<UpdateClassPage />} />
             <Route path="DeleteClass/:classID" element={<DeleteClassPage />} />

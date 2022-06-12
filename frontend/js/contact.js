@@ -1,3 +1,27 @@
+function postContactUs() {
+  let contactUserForm = document.getElementById("contact-us-form");
+
+  let formDataJSON = JSON.stringify(
+    Object.fromEntries(new FormData(contactUserForm))
+  );
+
+  fetch("/contact/create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: formDataJSON,
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      console.log(res);
+      window.location.href = "contact-us";
+    })
+    .catch((error) => {
+      console.log("contact us failed - " + error);
+    });
+}
+
 (function () {
   "use strict";
 

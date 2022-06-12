@@ -68,3 +68,7 @@
 [data-theme="dark"] .form-container {
   filter: invert(90%);
 }
+
+[data-theme="dark"] .intro {
+  filter: invert(90%);
+}

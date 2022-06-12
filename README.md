@@ -13,7 +13,7 @@ Once the repository has been cloned import the dance_fit_studio.sql schema into 
 A .env file then needs to be created in the main directory of the cloned repository and contain the following code with your own details.
 
 ```
-NODE_ENV=development
+NODE_ENV=production
 DB_PORT = 8080
 
 DB_HOST=MySQLServerNameHere
@@ -39,11 +39,13 @@ npm start
 This script is used to start the server and run the application.
 
 ```
-npm run dev
-```
 
-This script is used to run the nodemon server that will refresh upon changes made to the code.
+
+## Road map
+
+[Dance Fit Studio](https://trello.com/invite/b/nWSew7Ua/88c7118c3494b5ef1dda3f40f2b1f807/dance-fit-studio)
 
 ## Author
 
 [Kyle Parry](https://github.com/Kyle-Parry)
+```

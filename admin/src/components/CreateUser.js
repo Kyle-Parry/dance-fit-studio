@@ -7,42 +7,53 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import * as yup from "yup";
+import { useFormik } from "formik";
 
-export default function CreateClassPage() {
-  const [errMsg, setErrMsg] = useState("");
-  const [userEmail, setUserEmail] = useState("");
-  const [userFirstName, setUserFirstName] = useState("");
-  const [userLastName, setUserLastName] = useState("");
-  const [userPassword, setUserPassword] = useState("");
-
+export default function CreateUserPage() {
   const navigate = useNavigate();
+  const validationSchema = yup.object({
+    email: yup
+      .string()
+      .email("Must be a valid email address")
+      .required("email is required"),
+    firstName: yup.string().required("First name is required"),
+    lastName: yup.string().required("Last name is required"),
+    password: yup
+      .string()
+      .min(5, "Password must be longer than 5 characters")
+      .required("Class time is required"),
+  });
 
-  const createUser = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    try {
-      const response = await axios({
-        method: "post",
-        url: "http://localhost:8080/admin/createUser",
-        data: {
-          email: userEmail,
-          firstName: userFirstName,
-          lastName: userLastName,
-          password: userPassword,
-        },
-      }).then((response) => {
-        navigate("/Users");
-      });
-    } catch (error) {
-      if (!error.response) {
-        setErrMsg("No Server Response");
-      } else if (error.response?.status === 401) {
-        setErrMsg("Unauthorized");
-      } else {
-        setErrMsg("User failed to create.");
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      firstName: "",
+      lastName: "",
+      password: "",
+    },
+    validateOnBlur: true,
+    onSubmit: async (values) => {
+      try {
+        const response = await axios({
+          method: "post",
+          url: "http://localhost:8080/admin/createUser",
+          data: values,
+        }).then((response) => {
+          navigate("/Users");
+        });
+      } catch (error) {
+        if (!error.response) {
+          console.log("No Server Response");
+        } else if (error.response?.status === 401) {
+          console.log("Unauthorized");
+        } else {
+          console.log("User failed to create.");
+        }
       }
-    }
-  };
+    },
+    validationSchema: validationSchema,
+  });
 
   return (
     <React.Fragment>
@@ -50,7 +61,7 @@ export default function CreateClassPage() {
       <Container maxWidth="sm">
         <Box
           component="form"
-          onSubmit={createUser}
+          onSubmit={formik.handleSubmit}
           sx={{
             display: "flex",
             bgcolor: "#cfe8fc",
@@ -80,7 +91,11 @@ export default function CreateClassPage() {
             label="Email"
             placeholder="Email"
             sx={{ bgcolor: "#fff", marginTop: "30px", borderRadius: "5px" }}
-            onChange={(e) => setUserEmail(e.target.value)}
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.email && Boolean(formik.errors.email)}
+            helperText={formik.touched.email && formik.errors.email}
           />
           <TextField
             required
@@ -88,7 +103,11 @@ export default function CreateClassPage() {
             label="First Name"
             placeholder="First Name"
             sx={{ bgcolor: "#fff", marginTop: "30px", borderRadius: "5px" }}
-            onChange={(e) => setUserFirstName(e.target.value)}
+            value={formik.values.firstName}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+            helperText={formik.touched.firstName && formik.errors.firstName}
           />
           <TextField
             required
@@ -96,7 +115,11 @@ export default function CreateClassPage() {
             label="Last Name"
             placeholder="Last Name"
             sx={{ bgcolor: "#fff", marginTop: "30px", borderRadius: "5px" }}
-            onChange={(e) => setUserLastName(e.target.value)}
+            value={formik.values.lastName}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+            helperText={formik.touched.lastName && formik.errors.lastName}
           />
           <TextField
             required
@@ -105,20 +128,13 @@ export default function CreateClassPage() {
             label="Password"
             placeholder="Password"
             sx={{ bgcolor: "#fff", marginTop: "30px", borderRadius: "5px" }}
-            onChange={(e) => setUserPassword(e.target.value)}
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
           />
-          <Typography
-            variant="p"
-            component="div"
-            gutterBottom
-            sx={{
-              textAlign: "center",
-              marginTop: "30px",
-              color: "red",
-            }}
-          >
-            {errMsg}
-          </Typography>
+
           <div
             sx={{
               display: "flex",

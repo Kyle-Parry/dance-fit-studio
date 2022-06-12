@@ -154,7 +154,7 @@ router.post(
 // all routes start with /classes
 router.get("/classes", ipfilter(ips, { mode: "allow" }), async (req, res) => {
   const results =
-    await db.query(`SELECT c.classID, c.classType, c.Description, TIME_FORMAT(c.classTime, "%h %i %p") AS time, i.imgPath, i.imgAlt, DATE_FORMAT(c.classDate, "%W %M %e %Y") AS date
+    await db.query(`SELECT c.classID, c.classType, c.description, TIME_FORMAT(c.classTime, "%h %i %p") AS time, i.imgPath, i.imgAlt, DATE_FORMAT(c.classDate, "%W %M %e %Y") AS date
     FROM classes c 
     INNER JOIN images i ON (i.imgID = c.imgID)`);
   res.status(200).send(results);

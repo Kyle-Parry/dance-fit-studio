@@ -12,21 +12,22 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
+import * as yup from "yup";
+import { useFormik } from "formik";
 
 export default function CreateClassPage() {
-  const [errMsg, setErrMsg] = useState("");
-  const [CreateClassType, setCreateClassType] = useState("");
-  const [CreateDescription, setCreateDescription] = useState("");
-  const [CreateClassDate, setCreateClassDate] = useState("");
-  const [CreateClassTime, setCreateClassTime] = useState("");
-  const [CreateImgID, setCreateImgID] = useState("");
   const [imgs, setImgs] = useState([]);
+
+  const validationSchema = yup.object({
+    classType: yup.string().required("Class type is required"),
+    description: yup.string().required("Description is required"),
+    classDate: yup.date("Must be a date").required("Class date is required"),
+    classTime: yup.string().required("Class time is required"),
+    imgID: yup.string().required("Image is required"),
+  });
 
   const navigate = useNavigate();
 
-  const handleChange = (event) => {
-    setCreateImgID(event.target.value);
-  };
   useEffect(() => {
     const fetchImgs = async () => {
       try {
@@ -41,33 +42,36 @@ export default function CreateClassPage() {
     fetchImgs();
   }, []);
 
-  const createClass = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    try {
-      const response = await axios({
-        method: "post",
-        url: "http://localhost:8080/admin/createClass",
-        data: {
-          classType: CreateClassType,
-          description: CreateDescription,
-          classDate: CreateClassDate,
-          classTime: CreateClassTime,
-          imgID: CreateImgID,
-        },
-      }).then((response) => {
-        navigate("/Classes");
-      });
-    } catch (error) {
-      if (!error.response) {
-        setErrMsg("No Server Response");
-      } else if (error.response?.status === 401) {
-        setErrMsg("Unauthorized");
-      } else {
-        setErrMsg("Class failed to create.");
+  const formik = useFormik({
+    initialValues: {
+      classType: "",
+      description: "",
+      classDate: "",
+      classTime: "",
+      imgID: "",
+    },
+    validateOnBlur: true,
+    onSubmit: async (values) => {
+      try {
+        const response = await axios({
+          method: "post",
+          url: "http://localhost:8080/admin/createClass",
+          data: values,
+        }).then((response) => {
+          navigate("/Classes");
+        });
+      } catch (error) {
+        if (!error.response) {
+          console.log("No Server Response");
+        } else if (error.response?.status === 401) {
+          console.log("Unauthorized");
+        } else {
+          console.log("Class failed to create.");
+        }
       }
-    }
-  };
+    },
+    validationSchema: validationSchema,
+  });
 
   return (
     <React.Fragment>
@@ -75,7 +79,7 @@ export default function CreateClassPage() {
       <Container maxWidth="sm">
         <Box
           component="form"
-          onSubmit={createClass}
+          onSubmit={formik.handleSubmit}
           sx={{
             display: "flex",
             bgcolor: "#cfe8fc",
@@ -100,16 +104,21 @@ export default function CreateClassPage() {
             Create Class
           </Typography>
           <TextField
-            required
             id="classType"
+            name="classType"
             label="Class Type"
             placeholder="Class Type"
             sx={{ bgcolor: "#fff", marginTop: "30px", borderRadius: "5px" }}
-            onChange={(e) => setCreateClassType(e.target.value)}
+            value={formik.values.classType}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.classType && Boolean(formik.errors.classType)}
+            helperText={formik.touched.classType && formik.errors.classType}
           />
           <TextareaAutosize
             aria-label="minimum height"
             minRows={10}
+            id="description"
             placeholder="Description"
             style={{
               minWidth: 300,
@@ -118,24 +127,39 @@ export default function CreateClassPage() {
               marginTop: "30px",
               borderRadius: "5px",
             }}
-            onChange={(e) => setCreateDescription(e.target.value)}
-            required
+            value={formik.values.description}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.description && Boolean(formik.errors.description)
+            }
+            helperText={formik.touched.description && formik.errors.description}
           />
           <TextField
-            required
             type="date"
+            id="classDate"
+            name="classDate"
             sx={{ bgcolor: "#fff", marginTop: "30px", borderRadius: "5px" }}
-            onChange={(e) => setCreateClassDate(e.target.value)}
+            value={formik.values.classDate}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.classDate && Boolean(formik.errors.classDate)}
+            helperText={formik.touched.classDate && formik.errors.classDate}
           />
           <TextField
-            required
             type="Time"
+            id="classTime"
+            name="classTime"
             sx={{ bgcolor: "#fff", marginTop: "30px", borderRadius: "5px" }}
-            onChange={(e) => setCreateClassTime(e.target.value)}
+            value={formik.values.classTime}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.classTime && Boolean(formik.errors.classTime)}
+            helperText={formik.touched.classTime && formik.errors.classTime}
           />
           <FormControl
             sx={{
-              width: 100,
+              width: 300,
               bgcolor: "#fff",
               marginTop: "30px",
               borderRadius: "5px",
@@ -145,11 +169,13 @@ export default function CreateClassPage() {
 
             <Select
               labelId="demo-simple-select-label"
-              id="accountLevel"
-              value={CreateImgID}
-              label="accountLevel"
-              onChange={handleChange}
-              required
+              id="imgID"
+              name="imgID"
+              value={formik.values.imgID}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.imgID && Boolean(formik.errors.imgID)}
+              helperText={formik.touched.imgID && formik.errors.imgID}
             >
               {imgs.map((img) => (
                 <MenuItem key={img.imgID} value={img.imgID}>
@@ -158,18 +184,6 @@ export default function CreateClassPage() {
               ))}
             </Select>
           </FormControl>
-          <Typography
-            variant="p"
-            component="div"
-            gutterBottom
-            sx={{
-              textAlign: "center",
-              marginTop: "30px",
-              color: "red",
-            }}
-          >
-            {errMsg}
-          </Typography>
           <div
             sx={{
               display: "flex",

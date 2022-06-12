@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="assets/css/Toggle-Switches.css" />
     <link rel="stylesheet" href="assets/css/spinner.css" />
     <script src="js/nav.js" defer></script>
+    <script src="js/contact.js" defer></script>
   </head>
 
   <body class="d-flex flex-column min-vh-100">
@@ -57,7 +58,13 @@
             height="450"
           ></iframe>
         </section>
-        <form method="post" class="needs-validation" novalidate>
+        <form
+          id="contact-us-form"
+          method="post"
+          class="needs-validation"
+          onsubmit="postContactUs()"
+          novalidate
+        >
           <h2 class="text-center">Contact us</h2>
           <div class="mb-3">
             <input
@@ -65,7 +72,6 @@
               type="text"
               name="name"
               placeholder="Name"
-              pattern="/^[a-z ,.'-]+$/i"
               required
             />
           </div>
