@@ -6,8 +6,6 @@ const ipfilter = require("express-ipfilter").IpFilter;
 
 const router = Router();
 
-const ips = ["::1"];
-
 // validation rules
 createUserValidationRules = [
   body("email").isEmail().trim().escape(),
@@ -44,6 +42,11 @@ checkRules = (req, res, next) => {
   }
   next();
 };
+
+// List of Whitelisted IP addresses
+// ipfilter(ips, { mode: "allow" } is called on all admin routes to
+// restrict access to admin routes to only whitelisted IPs
+const ips = ["::1"];
 
 // user admin middleware
 // all routes start with /users

@@ -46,6 +46,15 @@ passport.use(
   )
 );
 
+// When details are entered into the admin panel's login page
+// passport js will run its normal authentication process
+// first checking if a user exists with that email, then
+// if it gets a response it will compare hashed passwords
+// with Bcrypt, if that is also a match it will then check
+// is the user in the response also has the "Admin" role.
+// If an admin role is found it will let the user through
+// and if no admin role is found it will return a false
+// not letting the user through.
 passport.use(
   "admin",
   new LocalStrategy(
