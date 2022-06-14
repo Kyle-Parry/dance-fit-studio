@@ -46,7 +46,7 @@ checkRules = (req, res, next) => {
 // List of Whitelisted IP addresses
 // ipfilter(ips, { mode: "allow" } is called on all admin routes to
 // restrict access to admin routes to only whitelisted IPs
-const ips = ["::1"];
+const ips = ["1.128.106.252"];
 
 // user admin middleware
 // all routes start with /users
