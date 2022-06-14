@@ -59,7 +59,10 @@ app.use(speedLimiter);
 // Cors locks the domain of the web service to only accept requests from
 // the origin domain listed in the corsOptions
 app.use(function (req, res, next) {
-  var allowedDomains = ["http://localhost:3000", "http://localhost:8080"];
+  var allowedDomains = [
+    "http://localhost:3000",
+    "https://dance-fit-studio.herokuapp.com/",
+  ];
   var origin = req.headers.origin;
   if (allowedDomains.indexOf(origin) > -1) {
     res.setHeader("Access-Control-Allow-Origin", origin);
