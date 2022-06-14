@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+    />
+    <title>dancefit</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Lora"
+    />
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/fonts/ionicons.min.css" />
+    <link
+      rel="stylesheet"
+      href="assets/css/Account-setting-or-edit-profile.css"
+    />
+    <link rel="stylesheet" href="assets/css/Article-Clean.css" />
+    <link rel="stylesheet" href="assets/css/Article-List.css" />
+    <link rel="stylesheet" href="assets/css/Contact-Form-Clean.css" />
+    <link rel="stylesheet" href="assets/css/Dark-Mode-Switch.css" />
+    <link rel="stylesheet" href="assets/css/Footer-Basic.css" />
+    <link rel="stylesheet" href="assets/css/Footer-Dark.css" />
+    <link rel="stylesheet" href="assets/css/Highlight-Phone.css" />
+    <link rel="stylesheet" href="assets/css/Login-Form-Clean.css" />
+    <link rel="stylesheet" href="assets/css/Map-Clean.css" />
+    <link rel="stylesheet" href="assets/css/Pretty-Registration-Form.css" />
+    <link rel="stylesheet" href="assets/css/Registration-Form-with-Photo.css" />
+    <link rel="stylesheet" href="assets/css/Toggle-Switches.css" />
+    <link rel="stylesheet" href="assets/css/spinner.css" />
+    <script src="js/nav.js" defer></script>
+    <script src="js/login.js" defer></script>
+  </head>
+
+  <body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-light navbar-expand-md bg-white"></nav>
+    <section class="login-clean">
+      <form
+        id="login-user-form"
+        class="needs-validation"
+        method="post"
+        novalidate
+      >
+        <h2 class="visually-hidden">Login Form</h2>
+        <div class="illustration border-0">
+          <img class="img-thumbnail border-0" src="assets/img/ATQM7575.jpg" />
+        </div>
+        <div class="mb-3">
+          <input
+            class="form-control"
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+          />
+          <div class="invalid-feedback">Please fill out this field.</div>
+        </div>
+        <div class="mb-3">
+          <input
+            class="form-control"
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+          />
+          <div id="incorrect" hidden style="color: red">
+            Incorrect Username or Password
+          </div>
+          <div class="invalid-feedback">Please fill out this field.</div>
+        </div>
+        <div class="mb-3">
+          <button
+            class="btn btn-primary d-block w-100 bg-primary"
+            type="submit"
+            onclick="postLoginUser()"
+          >
+            Log In
+          </button>
+        </div>
+        <a class="forgot" href="#">Forgot your password?</a>
+      </form>
+    </section>
+    <footer id="footer" class="footer-basic mt-auto"></footer>
+    <div id="spinner" class="d-flex justify-content-center">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/Dark-Mode-Switch.js"></script>
+  </body>
+</html>

@@ -1,0 +1,74 @@
+[data-theme="dark"] form nav section {
+  filter: invert(90%);
+}
+
+[data-theme="dark"] img {
+  filter: invert()
+}
+
+[data-theme="dark"] .carousel-item>img {
+  filter: invert(0)
+}
+
+[data-theme="dark"] .card>img {
+  filter: invert(0)
+}
+
+[data-theme="dark"] iframe {
+  filter: invert(0)
+}
+
+[data-theme="dark"] #spinner {
+  filter: invert(100%)
+}
+
+[data-theme="dark"] .card-body {
+  background-color: gray;
+  color: white;
+}
+
+[data-theme="dark"] .card-header {
+  background-color: gray;
+  color: white;
+}
+
+[data-theme="dark"] .contact-clean {
+  filter: invert(90%);
+}
+
+[data-theme="dark"] .list-group {
+  filter: invert(90%);
+}
+
+[data-theme="dark"] .bg-light {
+  filter: invert(90%);
+}
+
+[data-theme="dark"] .container {
+  background-color: gray;
+  color: white;
+}
+
+[data-theme="dark"] .login-clean {
+  background-color: gray;
+}
+
+[data-theme="dark"] .register-photo {
+  background-color: gray;
+}
+
+[data-theme="dark"] #login-user-form {
+  filter: invert(90%);
+}
+
+[data-theme="dark"] .bg-white {
+  filter: invert(90%);
+}
+
+[data-theme="dark"] .form-container {
+  filter: invert(90%);
+}
+
+[data-theme="dark"] .intro {
+  filter: invert(90%);
+}

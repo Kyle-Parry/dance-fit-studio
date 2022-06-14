@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+    />
+    <title>dancefit</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Lora"
+    />
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/fonts/ionicons.min.css" />
+    <link
+      rel="stylesheet"
+      href="assets/css/Account-setting-or-edit-profile.css"
+    />
+    <link rel="stylesheet" href="assets/css/Article-Clean.css" />
+    <link rel="stylesheet" href="assets/css/Article-List.css" />
+    <link rel="stylesheet" href="assets/css/Contact-Form-Clean.css" />
+    <link rel="stylesheet" href="assets/css/Footer-Basic.css" />
+    <link rel="stylesheet" href="assets/css/Footer-Dark.css" />
+    <link rel="stylesheet" href="assets/css/Highlight-Phone.css" />
+    <link rel="stylesheet" href="assets/css/Login-Form-Clean.css" />
+    <link rel="stylesheet" href="assets/css/Map-Clean.css" />
+    <link rel="stylesheet" href="assets/css/Pretty-Registration-Form.css" />
+    <link rel="stylesheet" href="assets/css/Registration-Form-with-Photo.css" />
+    <link rel="stylesheet" href="assets/css/Toggle-Switches.css" />
+    <link rel="stylesheet" href="assets/css/spinner.css" />
+    <script src="js/nav.js" defer></script>
+    <script src="js/settings.js" defer></script>
+    <link rel="stylesheet" href="assets/css/Dark-Mode-Switch.css" />
+  </head>
+
+  <body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-light navbar-expand-md bg-white"></nav>
+    <div class="container p-3 pb-5 pt-5 flex-grow-1">
+      <div class="col-lg-12 d-lg-flex justify-content-lg-center">
+        <div class="card shadow mb-3">
+          <div class="card-header py-3">
+            <p class="text-primary m-0 fw-bold">User Settings</p>
+          </div>
+          <div class="card-body">
+            <div class="form-check form-switch">
+              <input type="checkbox" class="form-check-input" id="darkSwitch" />
+              <label class="custom-control-label" for="darkSwitch"
+                >Dark Mode</label
+              >
+            </div>
+            <form
+              id="update-user-form"
+              method="post"
+              class="needs-validation"
+              novalidate
+            >
+              <div class="row">
+                <div class="col">
+                  <div class="form-group mb-3">
+                    <label class="form-label" for="email"
+                      ><strong>Email Address</strong></label
+                    ><input
+                      id="email"
+                      class="form-control"
+                      type="email"
+                      name="email"
+                      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                    />
+                    <div class="invalid-feedback">Not a valid Email.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-group mb-3">
+                    <label class="form-label" for="firstName"
+                      ><strong>First Name</strong></label
+                    ><input
+                      id="firstName"
+                      class="form-control"
+                      type="text"
+                      name="firstName"
+                      pattern="/^[a-z ,.'-]+$/i"
+                      required
+                    />
+                    <div class="invalid-feedback">
+                      Please fill out this field.
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group mb-3">
+                    <label class="form-label" for="lastName"
+                      ><strong>Last Name</strong></label
+                    ><input
+                      id="lastName"
+                      class="form-control"
+                      type="text"
+                      name="lastName"
+                      pattern="/^[a-z ,.'-]+$/i"
+                      required
+                    />
+                    <div class="invalid-feedback">
+                      Please fill out this field.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-group mb-3">
+                    <label class="form-label" for="password"
+                      ><strong>New Password</strong><br /></label
+                    ><input
+                      id="password"
+                      name="password"
+                      class="form-control"
+                      type="password"
+                      pattern="^.{5,20}$"
+                    />
+                    <div class="invalid-feedback">
+                      Password needs to be between 5 and 20 characters.
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-group mb-3">
+                    <label class="form-label" for="confirm-password"
+                      ><strong>Confirm New Password</strong><br /></label
+                    ><input
+                      id="confirm-password"
+                      class="form-control"
+                      type="password"
+                    />
+                    <div class="invalid-feedback">Password does not match.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group mb-3">
+                <button
+                  class="btn btn-primary btn-sm"
+                  type="button"
+                  onclick="postUpdateUser()"
+                >
+                  Save Settings
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer id="footer" class="footer-basic mt-auto"></footer>
+    <div id="spinner" class="d-flex justify-content-center">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/Dark-Mode-Switch.js"></script>
+  </body>
+</html>

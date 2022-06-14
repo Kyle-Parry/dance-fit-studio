@@ -5,8 +5,12 @@ const session = require("express-session");
 const bodyParser = require("body-parser");
 const rateLimit = require("express-rate-limit");
 const slowDown = require("express-slow-down");
-const cors = require("cors");
+const local = require("./passport-config.js");
+const passport = require("passport");
+const db = require("./database");
+const path = require("path");
 
+const store = new session.MemoryStore();
 const app = express();
 const port = process.env.PORT || 8080;
 
@@ -16,14 +20,17 @@ app.use(express.urlencoded({ extended: true }));
 // enable session middleware so that we have state
 app.use(
   session({
-    secret: "this is a secret",
-    resave: false,
-    saveUninitialized: false,
+    secret: process.env.SESSION_SECRET,
     cookie: {
-      secure: false,
+      maxAge: 3000000,
     },
+    saveUninitialized: false,
+    store,
   })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 const limiter = rateLimit({
   windowMs: 1440 * 60 * 1000, // 24hrs
@@ -39,9 +46,9 @@ const speedLimiter = slowDown({
   windowMs: 1000, // 1 second
   delayAfter: 1, // allow 1 requests per 1 second, then...
   delayMs: 500, // begin adding 500ms of delay per request above 1:
-  // request # 101 is delayed by  500ms
-  // request # 102 is delayed by 1000ms
-  // request # 103 is delayed by 1500ms
+  // request # 1 is delayed by  500ms
+  // request # 2 is delayed by 1000ms
+  // request # 3 is delayed by 1500ms
   // etc.
 });
 
@@ -49,44 +56,64 @@ const speedLimiter = slowDown({
 app.use(speedLimiter);
 
 // whitelisting origin to localhost
-const corsOptions = {
-  origin: "localhost",
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-};
+// Cors locks the domain of the web service to only accept requests from
+// the origin domain listed in the corsOptions
+app.use(function (req, res, next) {
+  var allowedDomains = ["http://localhost:3000", "http://localhost:8080"];
+  var origin = req.headers.origin;
+  if (allowedDomains.indexOf(origin) > -1) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
 
-app.use(cors(corsOptions));
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With,content-type, Accept"
+  );
+  res.setHeader("Access-Control-Allow-Credentials", true);
 
-app.listen(80, function () {
-  console.log("CORS-enabled web server listening on port 80");
+  next();
 });
 
 // request logging middleware
+// Every time a request is made this middleware runs logging the
+// users IP address, sessionID, what method the request was, and
+// the URL of the request. Additionally logging the email address
+// of the user if logged in. A current timestamp is also logged
+// in the database every time an entry is made on the table.
+
 const logRoute = require("./routes/log.js");
 app.use((req, res, next) => {
-  // let userLoggedIn = req.session.user != null
-  // if (userLoggedIn === true) {
-  logRoute.addLog(
-    req.ip,
-    // req.sessionID,
-    req.method,
-    req.url
-    // req.session.user.email,
-  );
-  next();
-  //   } else {
-  // logRoute.addLog(
-  //     req.ip,
-  //     req.sessionID,
-  //     req.method,
-  //     req.url
-  //       )
-  //       next()
-  //   }
+  let userLoggedIn = req.user != null;
+  if (userLoggedIn === true) {
+    logRoute.addLog(
+      req.ip,
+      req.sessionID,
+      req.method,
+      req.url,
+      req.user[0].userId
+    );
+    next();
+  } else {
+    logRoute.addLog(req.ip, req.sessionID, req.method, req.url);
+    next();
+  }
 });
+
+// Allow the following IPs
+
+app.use(express.static("frontend"));
+app.use(express.static("admin"));
 
 // links to all routes
 const usersRoutes = require("./routes/users.js");
 app.use("/users", usersRoutes);
+
+const authRoute = require("./routes/auth.js");
+app.use("/auth", authRoute);
+
+const logoutRoute = require("./routes/logout.js");
+app.use("/logout", logoutRoute);
 
 const classRoutes = require("./routes/classes.js");
 app.use("/classes", classRoutes);
@@ -94,11 +121,70 @@ app.use("/classes", classRoutes);
 const bookingRoutes = require("./routes/bookings.js");
 app.use("/bookings", bookingRoutes);
 
-app.get("/", (req, res) => {
-  console.log("Test!");
+const specialRoutes = require("./routes/special-occasions.js");
+app.use("/special", specialRoutes);
 
-  res.send("hello from the other side");
+const contactRoutes = require("./routes/contact.js");
+app.use("/contact", contactRoutes);
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "index.html"));
 });
+app.get("/class-list", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "classes.html"));
+});
+app.get("/login", checkNotAuthentication, (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "login.html"));
+});
+app.get("/register", checkNotAuthentication, (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "register.html"));
+});
+app.get("/special-occasions", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "special-occasions.html"));
+});
+app.get("/settings", checkAuthentication, (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "settings.html"));
+});
+app.get("/contact-us", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "contact.html"));
+});
+app.get("/your-classes", checkAuthentication, (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "your-classes.html"));
+});
+app.get("/booking", checkAuthentication, (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "bookings.html"));
+});
+app.get("/cancel", checkAuthentication, (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "cancel-booking.html"));
+});
+app.get("/help", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend", "help.html"));
+});
+
+function checkAuthentication(req, res, next) {
+  if (req.isAuthenticated()) {
+    //req.isAuthenticated() will return true if user is logged in
+    next();
+  } else {
+    res.redirect("/login");
+  }
+}
+
+function checkNotAuthentication(req, res, next) {
+  if (req.isAuthenticated()) {
+    //req.isAuthenticated() will return false if user is not logged in
+    res.redirect("/");
+  }
+  next();
+}
+function checkNotAdmin(req, res, next) {
+  if (req.isAuthenticated() && req.user[0].accountLevel == "Admin")
+    return next();
+  else res.status(401).json("test");
+}
+
+const adminRoute = require("./routes/admin.js");
+app.use("/admin", adminRoute);
 
 // server starting message
 app.listen(port, () =>

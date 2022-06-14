@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+    />
+    <title>dancefit</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Lora"
+    />
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/fonts/ionicons.min.css" />
+    <link
+      rel="stylesheet"
+      href="assets/css/Account-setting-or-edit-profile.css"
+    />
+    <link rel="stylesheet" href="assets/css/Article-Clean.css" />
+    <link rel="stylesheet" href="assets/css/Article-List.css" />
+    <link rel="stylesheet" href="assets/css/Contact-Form-Clean.css" />
+    <link rel="stylesheet" href="assets/css/Dark-Mode-Switch.css" />
+    <link rel="stylesheet" href="assets/css/Footer-Basic.css" />
+    <link rel="stylesheet" href="assets/css/Footer-Dark.css" />
+    <link rel="stylesheet" href="assets/css/Highlight-Phone.css" />
+    <link rel="stylesheet" href="assets/css/Login-Form-Clean.css" />
+    <link rel="stylesheet" href="assets/css/Map-Clean.css" />
+    <link rel="stylesheet" href="assets/css/Pretty-Registration-Form.css" />
+    <link rel="stylesheet" href="assets/css/Registration-Form-with-Photo.css" />
+    <link rel="stylesheet" href="assets/css/Toggle-Switches.css" />
+    <link rel="stylesheet" href="assets/css/spinner.css" />
+    <script src="js/nav.js" defer></script>
+    <script src="js/contact.js" defer></script>
+  </head>
+
+  <body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-light navbar-expand-md bg-white"></nav>
+    <div class="container p-3">
+      <section class="contact-clean">
+        <section class="map-clean">
+          <div class="container bg-white">
+            <div class="intro">
+              <h2 class="text-center">Location</h2>
+              <p class="text-center">
+                Nunc luctus in metus eget fringilla. Aliquam sed justo ligula.
+                Vestibulum nibh erat, pellentesque ut laoreet vitae.
+              </p>
+            </div>
+          </div>
+          <iframe
+            allowfullscreen=""
+            frameborder="0"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3314.4855002046074!2d151.07607521520913!3d-33.82558808066814!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b12a5377159d48b%3A0xa648a1b613501d11!2sWentworth%20Point%20Community%20Centre%20and%20Library!5e0!3m2!1sen!2sau!4v1653457247869!5m2!1sen!2sau"
+            width="100%"
+            height="450"
+          ></iframe>
+        </section>
+        <form
+          id="contact-us-form"
+          method="post"
+          class="needs-validation"
+          onsubmit="postContactUs()"
+          novalidate
+        >
+          <h2 class="text-center">Contact us</h2>
+          <div class="mb-3">
+            <input
+              class="form-control"
+              type="text"
+              name="name"
+              placeholder="Name"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <input
+              class="form-control is-invalid"
+              type="email"
+              name="email"
+              placeholder="Email"
+              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+              required
+            /><small class="form-text text-danger"
+              >Please enter a correct email address.</small
+            >
+          </div>
+          <div class="mb-3">
+            <textarea
+              class="form-control"
+              name="message"
+              placeholder="Message"
+              rows="14"
+              required
+            ></textarea>
+          </div>
+          <div class="mb-3">
+            <button class="btn btn-primary" type="submit">send</button>
+          </div>
+        </form>
+      </section>
+    </div>
+    <footer id="footer" class="footer-basic mt-auto"></footer>
+    <div id="spinner" class="d-flex justify-content-center">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/Dark-Mode-Switch.js"></script>
+  </body>
+</html>
