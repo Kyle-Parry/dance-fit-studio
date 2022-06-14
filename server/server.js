@@ -60,7 +60,7 @@ app.use(speedLimiter);
 // the origin domain listed in the corsOptions
 app.use(function (req, res, next) {
   var allowedDomains = [
-    "http://localhost:3000/",
+    "http://localhost:3000",
     "https://dance-fit-studio.herokuapp.com/",
   ];
   var origin = req.headers.origin;
