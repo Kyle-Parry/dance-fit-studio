@@ -22,7 +22,7 @@ function App() {
       <AuthContext.Provider value={{ auth, setAuth }}>
         <ResponsiveAppBar />
         <Routes>
-          <Route path="/" element={<LoginPage />} />
+          <Route path="Admin-Panel" element={<LoginPage />} />
           <Route element={<PrivateRoute />}>
             <Route path="Users" element={<UserPage />} />
             <Route path="UpdateUser/:userId" element={<UpdateUserPage />} />
