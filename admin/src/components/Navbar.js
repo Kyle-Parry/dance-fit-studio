@@ -13,6 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import AuthContext from "../context/AuthContext";
 
+const pages = ["Users", "Classes"];
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
 
@@ -33,7 +34,7 @@ const ResponsiveAppBar = () => {
         url: "https://dance-fit-studio.herokuapp.com/logout",
         withCredentials: true,
       },
-      navigate("Admin/Login"),
+      navigate("/"),
       setAuth({ loggedIn: false })
     );
   };
@@ -79,26 +80,18 @@ const ResponsiveAppBar = () => {
             display: { xs: "block", md: "none" },
           }}
         >
-          <MenuItem onClick={handleCloseNavMenu}>
-            <Typography textAlign="center">
-              <Link
-                style={{ textDecoration: "inherit", color: "inherit" }}
-                to={`Admin/Users`}
-              >
-                Users
-              </Link>
-            </Typography>
-          </MenuItem>
-          <MenuItem onClick={handleCloseNavMenu}>
-            <Typography textAlign="center">
-              <Link
-                style={{ textDecoration: "inherit", color: "inherit" }}
-                to={`Admin/Classes`}
-              >
-                Classes
-              </Link>
-            </Typography>
-          </MenuItem>
+          {pages.map((page) => (
+            <MenuItem key={page} onClick={handleCloseNavMenu}>
+              <Typography textAlign="center">
+                <Link
+                  style={{ textDecoration: "inherit", color: "inherit" }}
+                  to={`/${page}`}
+                >
+                  {page}
+                </Link>
+              </Typography>
+            </MenuItem>
+          ))}
         </Menu>
       </Box>
     );
@@ -107,28 +100,20 @@ const ResponsiveAppBar = () => {
   if (auth.loggedIn) {
     navBar = (
       <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-        <Button
-          onClick={handleCloseNavMenu}
-          sx={{ my: 2, color: "white", display: "block" }}
-        >
-          <Link
-            style={{ textDecoration: "inherit", color: "inherit" }}
-            to={`Admin/Users`}
+        {pages.map((page) => (
+          <Button
+            key={page}
+            onClick={handleCloseNavMenu}
+            sx={{ my: 2, color: "white", display: "block" }}
           >
-            Users
-          </Link>
-        </Button>
-        <Button
-          onClick={handleCloseNavMenu}
-          sx={{ my: 2, color: "white", display: "block" }}
-        >
-          <Link
-            style={{ textDecoration: "inherit", color: "inherit" }}
-            to={`Admin/Classes`}
-          >
-            Classes
-          </Link>
-        </Button>
+            <Link
+              style={{ textDecoration: "inherit", color: "inherit" }}
+              to={`/${page}`}
+            >
+              {page}
+            </Link>
+          </Button>
+        ))}
       </Box>
     );
   }

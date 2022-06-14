@@ -31,7 +31,7 @@ export default function LoginPage() {
         },
       }).then((response) => {
         setAuth({ loggedIn: true });
-        navigate("Admin/Users");
+        navigate("Users");
       });
     } catch (error) {
       if (!error.response) {

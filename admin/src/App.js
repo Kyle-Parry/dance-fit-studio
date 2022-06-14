@@ -22,28 +22,16 @@ function App() {
       <AuthContext.Provider value={{ auth, setAuth }}>
         <ResponsiveAppBar />
         <Routes>
-          <Route path="Admin/Login" element={<LoginPage />} />
+          <Route path="/" element={<LoginPage />} />
           <Route element={<PrivateRoute />}>
-            <Route path="Admin/Users" element={<UserPage />} />
-            <Route
-              path="Admin/UpdateUser/:userId"
-              element={<UpdateUserPage />}
-            />
-            <Route
-              path="Admin/DeleteUser/:userId"
-              element={<DeleteUserPage />}
-            />
-            <Route path="Admin/CreateUser" element={<CreateUserPage />} />
-            <Route path="Admin/Classes" element={<ClassPage />} />
-            <Route
-              path="Admin/UpdateClass/:classID"
-              element={<UpdateClassPage />}
-            />
-            <Route
-              path="Admin/DeleteClass/:classID"
-              element={<DeleteClassPage />}
-            />
-            <Route path="Admin/CreateClass" element={<CreateClassPage />} />
+            <Route path="Users" element={<UserPage />} />
+            <Route path="UpdateUser/:userId" element={<UpdateUserPage />} />
+            <Route path="DeleteUser/:userId" element={<DeleteUserPage />} />
+            <Route path="CreateUser" element={<CreateUserPage />} />
+            <Route path="Classes" element={<ClassPage />} />
+            <Route path="UpdateClass/:classID" element={<UpdateClassPage />} />
+            <Route path="DeleteClass/:classID" element={<DeleteClassPage />} />
+            <Route path="CreateClass" element={<CreateClassPage />} />
           </Route>
         </Routes>
       </AuthContext.Provider>
