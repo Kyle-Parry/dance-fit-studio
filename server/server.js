@@ -103,7 +103,7 @@ app.use((req, res, next) => {
 // Allow the following IPs
 
 app.use(express.static("frontend"));
-app.use(express.static("admin/public"));
+app.use("/admin", express.static("admin/public"));
 
 // links to all routes
 const usersRoutes = require("./routes/users.js");
