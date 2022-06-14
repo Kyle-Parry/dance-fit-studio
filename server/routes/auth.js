@@ -10,15 +10,9 @@ router.post("/login", passport.authenticate("user"), (req, res) => {
 
 // The admin login route will only run with
 // whitelisted IP addresses.
-const ips = ["::1"];
 
-router.post(
-  "/admin",
-  ipfilter(ips, { mode: "allow" }),
-  passport.authenticate("admin"),
-  (req, res) => {
-    res.status(200).send({ msg: "Logged in" });
-  }
-);
+router.post("/admin", passport.authenticate("admin"), (req, res) => {
+  res.status(200).send({ msg: "Logged in" });
+});
 
 module.exports = router;
