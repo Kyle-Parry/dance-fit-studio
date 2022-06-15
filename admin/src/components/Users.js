@@ -48,7 +48,7 @@ export default function UserPage() {
           <Button size="small">
             <Link
               style={{ textDecoration: "inherit", color: "inherit" }}
-              to={`CreateUser`}
+              to={`/CreateUser`}
             >
               Create User
             </Link>
@@ -79,7 +79,7 @@ export default function UserPage() {
                 <Button size="small">
                   <Link
                     style={{ textDecoration: "inherit", color: "inherit" }}
-                    to={`UpdateUser/${user.userId}`}
+                    to={`/UpdateUser/${user.userId}`}
                   >
                     Update User
                   </Link>
@@ -89,7 +89,7 @@ export default function UserPage() {
                 <Button size="small">
                   <Link
                     style={{ textDecoration: "inherit", color: "inherit" }}
-                    to={`DeleteUser/${user.userId}`}
+                    to={`/DeleteUser/${user.userId}`}
                   >
                     Delete User
                   </Link>

@@ -25,19 +25,13 @@ function App() {
           <Route path="/" element={<LoginPage />} />
           <Route element={<PrivateRoute />}>
             <Route path="/Users" element={<UserPage />} />
-            <Route path="./UpdateUser/:userId" element={<UpdateUserPage />} />
-            <Route path="./DeleteUser/:userId" element={<DeleteUserPage />} />
-            <Route path="./CreateUser" element={<CreateUserPage />} />
+            <Route path="/UpdateUser/:userId" element={<UpdateUserPage />} />
+            <Route path="/DeleteUser/:userId" element={<DeleteUserPage />} />
+            <Route path="/CreateUser" element={<CreateUserPage />} />
             <Route path="/Classes" element={<ClassPage />} />
-            <Route
-              path="./UpdateClass/:classID"
-              element={<UpdateClassPage />}
-            />
-            <Route
-              path="./DeleteClass/:classID"
-              element={<DeleteClassPage />}
-            />
-            <Route path="./CreateClass" element={<CreateClassPage />} />
+            <Route path="/UpdateClass/:classID" element={<UpdateClassPage />} />
+            <Route path="/DeleteClass/:classID" element={<DeleteClassPage />} />
+            <Route path="/CreateClass" element={<CreateClassPage />} />
           </Route>
         </Routes>
       </AuthContext.Provider>

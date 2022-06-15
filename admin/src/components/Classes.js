@@ -46,7 +46,7 @@ export default function ClassPage() {
           <Typography variant="h3">Classes</Typography>
           <Button size="small">
             <Link
-              to="CreateClass"
+              to="/CreateClass"
               style={{ textDecoration: "inherit", color: "inherit" }}
             >
               Create Class
@@ -76,7 +76,7 @@ export default function ClassPage() {
                 <Button size="small">
                   <Link
                     style={{ textDecoration: "inherit", color: "inherit" }}
-                    to={`UpdateClass/${clas.classID}`}
+                    to={`/UpdateClass/${clas.classID}`}
                   >
                     Update Class
                   </Link>
@@ -86,7 +86,7 @@ export default function ClassPage() {
                 <Button size="small">
                   <Link
                     style={{ textDecoration: "inherit", color: "inherit" }}
-                    to={`DeleteClass/${clas.classID}`}
+                    to={`/DeleteClass/${clas.classID}`}
                   >
                     Delete Class
                   </Link>
