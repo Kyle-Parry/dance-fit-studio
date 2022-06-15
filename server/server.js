@@ -34,7 +34,7 @@ app.use(passport.session());
 
 const limiter = rateLimit({
   windowMs: 1440 * 60 * 1000, // 24hrs
-  max: 1000, // Limit each IP to 1000 requests per `window`
+  max: 500, // Limit each IP to 500 requests per `window`
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
@@ -43,7 +43,7 @@ const limiter = rateLimit({
 app.use(limiter);
 
 const speedLimiter = slowDown({
-  windowMs: 1000, // 1 second
+  windowMs: 500, // 0.5 seconds
   delayAfter: 1, // allow 1 requests per 1 second, then...
   delayMs: 500, // begin adding 500ms of delay per request above 1:
   // request # 1 is delayed by  500ms
@@ -59,10 +59,7 @@ app.use(speedLimiter);
 // Cors locks the domain of the web service to only accept requests from
 // the origin domain listed in the corsOptions
 app.use(function (req, res, next) {
-  var allowedDomains = [
-    "http://localhost:3000",
-    "https://dance-fit-studio.herokuapp.com/",
-  ];
+  var allowedDomains = ["https://dance-fit-studio.herokuapp.com/"];
   var origin = req.headers.origin;
   if (allowedDomains.indexOf(origin) > -1) {
     res.setHeader("Access-Control-Allow-Origin", origin);
@@ -106,7 +103,7 @@ app.use((req, res, next) => {
 // Allow the following IPs
 
 app.use(express.static("frontend"));
-app.use(express.static("admin"));
+app.use("/admin-panel", express.static("admin/public"));
 
 // links to all routes
 const usersRoutes = require("./routes/users.js");

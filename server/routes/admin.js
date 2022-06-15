@@ -46,11 +46,10 @@ checkRules = (req, res, next) => {
 // List of Whitelisted IP addresses
 // ipfilter(ips, { mode: "allow" } is called on all admin routes to
 // restrict access to admin routes to only whitelisted IPs
-const ips = ["::1"];
 
 // user admin middleware
 // all routes start with /users
-router.get("/users", ipfilter(ips, { mode: "allow" }), async (req, res) => {
+router.get("/users", async (req, res) => {
   const results = await db.query(
     `SELECT userId, email, firstName, lastName, accountLevel FROM users`
   );
@@ -60,7 +59,7 @@ router.get("/users", ipfilter(ips, { mode: "allow" }), async (req, res) => {
 // get user by email
 router.get(
   "/users/:userId",
-  ipfilter(ips, { mode: "allow" }),
+
   async (req, res) => {
     const userId = req.params.userId;
     const results = await db.query(
@@ -73,7 +72,7 @@ router.get(
 // create user middleware
 router.post(
   "/createUser",
-  ipfilter(ips, { mode: "allow" }),
+
   createUserValidationRules,
   checkRules,
   async (req, res) => {
@@ -100,7 +99,7 @@ router.post(
 
 router.post(
   "/updateUser",
-  ipfilter(ips, { mode: "allow" }),
+
   updateUserValidationRules,
   checkRules,
   async (req, res) => {
@@ -129,7 +128,7 @@ router.post(
 // delete user middleware
 router.post(
   "/deleteUser",
-  ipfilter(ips, { mode: "allow" }),
+
   deleteUserValidationRules,
   checkRules,
   async (req, res) => {
@@ -155,7 +154,7 @@ router.post(
 
 // class admin middleware
 // all routes start with /classes
-router.get("/classes", ipfilter(ips, { mode: "allow" }), async (req, res) => {
+router.get("/classes", async (req, res) => {
   const results =
     await db.query(`SELECT c.classID, c.classType, c.description, TIME_FORMAT(c.classTime, "%h %i %p") AS time, i.imgPath, i.imgAlt, DATE_FORMAT(c.classDate, "%W %M %e %Y") AS date
     FROM classes c 
@@ -166,7 +165,7 @@ router.get("/classes", ipfilter(ips, { mode: "allow" }), async (req, res) => {
 // get class by classID
 router.get(
   "/classes/:classID",
-  ipfilter(ips, { mode: "allow" }),
+
   async (req, res) => {
     const classID = req.params.classID;
     const results = await db.query(`SELECT * FROM classes WHERE classID = ?`, [
@@ -179,7 +178,7 @@ router.get(
 // create class middleware
 router.post(
   "/createClass",
-  ipfilter(ips, { mode: "allow" }),
+
   createClassValidationRules,
   checkRules,
   async (req, res) => {
@@ -205,7 +204,7 @@ router.post(
 // update class middleware
 router.post(
   "/updateClass",
-  ipfilter(ips, { mode: "allow" }),
+
   updateClassValidationRules,
   checkRules,
   async (req, res) => {
@@ -260,7 +259,7 @@ router.post(
   "/deleteClass",
   deleteClassValidationRules,
   checkRules,
-  ipfilter(ips, { mode: "allow" }),
+
   async (req, res) => {
     const { classID } = req.body;
     if (classID) {
@@ -282,7 +281,7 @@ router.post(
   }
 );
 
-router.get("/imgs", ipfilter(ips, { mode: "allow" }), async (req, res) => {
+router.get("/imgs", async (req, res) => {
   const results = await db.query(`SELECT * FROM images`);
   res.status(200).json(results);
 });
