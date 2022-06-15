@@ -10,26 +10,26 @@ Node.js, MySQL
 
 ### Backend technologies, framework and packages
 
-Express.js 4.17.3
-Express-session 1.17.2
-Passport.js 0.5.2
-Passport-local 1.0.0
-Bcrypt 5.0.1
-Express-rate-limit 6.3.0
-Express-slow-down 1.4.0
-Express-validator 6.14.0
-Mysql2 2.3.3
+- Express.js 4.17.3
+- Express-session 1.17.2
+- Passport.js 0.5.2
+- Passport-local 1.0.0
+- Bcrypt 5.0.1
+- Express-rate-limit 6.3.0
+- Express-slow-down 1.4.0
+- Express-validator 6.14.0
+- Mysql2 2.3.3
 
 ### Frontend technologies, framework and packages
 
-Static HTML/CSS/JS
-Bootstrap5
-React.js 18.1.0
-React-router-dom 6.3.0
-Axios 0.27.2
-Material Ui 5.8.2
-Formik 2.2.9
-Yup 0.32.11
+- Static HTML/CSS/JS
+- Bootstrap5
+- React.js 18.1.0
+- React-router-dom 6.3.0
+- Axios 0.27.2
+- Material Ui 5.8.2
+- Formik 2.2.9
+- Yup 0.32.11
 
 ## Installation for further development
 
