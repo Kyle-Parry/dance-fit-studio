@@ -14,6 +14,7 @@ function postLoginUser() {
   })
     .then((res) => res.json())
     .then((res) => {
+      console.log(res);
       localStorage.setItem("loggedIn", "true");
       window.location.href = "/";
     })
