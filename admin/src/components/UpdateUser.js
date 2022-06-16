@@ -18,8 +18,8 @@ export default function UpdateUserPage() {
   const navigate = useNavigate();
 
   const validationSchema = yup.object({
-    accountLevel: yup.string().required(),
-    userId: yup.string().required("Role is required"),
+    accountLevel: yup.string().required("Role is required"),
+    userId: yup.string().required(),
   });
 
   const formik = useFormik({
@@ -88,7 +88,7 @@ export default function UpdateUserPage() {
               id="accountLevel"
               label="accountLevel"
               value={formik.values.accountLevel}
-              onChange={formik.handleChange}
+              onChange={formik.handleChange("accountLevel")}
               onBlur={formik.handleBlur}
               error={
                 formik.touched.accountLevel &&
