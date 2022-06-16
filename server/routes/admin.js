@@ -44,13 +44,19 @@ checkRules = (req, res, next) => {
   next();
 };
 
+function checkNotAdmin(req, res, next) {
+  if (req.isAuthenticated() && req.user[0].accountLevel == "Admin")
+    return next();
+  else res.status(401).json("test");
+}
+
 // List of Whitelisted IP addresses
 // ipfilter(ips, { mode: "allow" } is called on all admin routes to
 // restrict access to admin routes to only whitelisted IPs
 
 // user admin middleware
 // all routes start with /users
-router.get("/users", async (req, res) => {
+router.get("/users", checkNotAdmin, async (req, res) => {
   const results = await db.query(
     `SELECT userId, email, firstName, lastName, accountLevel FROM users`
   );
