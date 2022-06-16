@@ -3,6 +3,7 @@ const db = require("../database");
 const { body, validationResult } = require("express-validator");
 const passport = require("passport");
 const ipfilter = require("express-ipfilter").IpFilter;
+const bcrypt = require("bcrypt");
 
 const router = Router();
 
