@@ -47,7 +47,7 @@ checkRules = (req, res, next) => {
 function checkNotAdmin(req, res, next) {
   if (req.isAuthenticated() && req.user[0].accountLevel == "Admin")
     return next();
-  else res.status(401).json("test");
+  else res.status(401).json("Unauthorized");
 }
 
 // List of Whitelisted IP addresses
@@ -64,22 +64,18 @@ router.get("/users", checkNotAdmin, async (req, res) => {
 });
 
 // get user by email
-router.get(
-  "/users/:userId",
-
-  async (req, res) => {
-    const userId = req.params.userId;
-    const results = await db.query(
-      `SELECT userId, email, firstName, lastName, accountLevel FROM users WHERE userId = ?`,
-      [userId]
-    );
-    res.status(200).json(results);
-  }
-);
+router.get("/users/:userId", checkNotAdmin, async (req, res) => {
+  const userId = req.params.userId;
+  const results = await db.query(
+    `SELECT userId, email, firstName, lastName, accountLevel FROM users WHERE userId = ?`,
+    [userId]
+  );
+  res.status(200).json(results);
+});
 // create user middleware
 router.post(
   "/createUser",
-
+  checkNotAdmin,
   createUserValidationRules,
   checkRules,
   async (req, res) => {
@@ -106,7 +102,7 @@ router.post(
 
 router.post(
   "/updateUser",
-
+  checkNotAdmin,
   updateUserValidationRules,
   checkRules,
   async (req, res) => {
@@ -135,7 +131,7 @@ router.post(
 // delete user middleware
 router.post(
   "/deleteUser",
-
+  checkNotAdmin,
   deleteUserValidationRules,
   checkRules,
   async (req, res) => {
@@ -161,7 +157,7 @@ router.post(
 
 // class admin middleware
 // all routes start with /classes
-router.get("/classes", async (req, res) => {
+router.get("/classes", checkNotAdmin, async (req, res) => {
   const results =
     await db.query(`SELECT c.classID, c.classType, c.description, TIME_FORMAT(c.classTime, "%h %i %p") AS time, i.imgPath, i.imgAlt, DATE_FORMAT(c.classDate, "%W %M %e %Y") AS date
     FROM classes c 
@@ -170,22 +166,18 @@ router.get("/classes", async (req, res) => {
 });
 
 // get class by classID
-router.get(
-  "/classes/:classID",
-
-  async (req, res) => {
-    const classID = req.params.classID;
-    const results = await db.query(`SELECT * FROM classes WHERE classID = ?`, [
-      classID,
-    ]);
-    res.status(200).json(results);
-  }
-);
+router.get("/classes/:classID", checkNotAdmin, async (req, res) => {
+  const classID = req.params.classID;
+  const results = await db.query(`SELECT * FROM classes WHERE classID = ?`, [
+    classID,
+  ]);
+  res.status(200).json(results);
+});
 
 // create class middleware
 router.post(
   "/createClass",
-
+  checkNotAdmin,
   createClassValidationRules,
   checkRules,
   async (req, res) => {
@@ -211,7 +203,7 @@ router.post(
 // update class middleware
 router.post(
   "/updateClass",
-
+  checkNotAdmin,
   updateClassValidationRules,
   checkRules,
   async (req, res) => {
@@ -264,9 +256,9 @@ router.post(
 // delete class middleware
 router.post(
   "/deleteClass",
+  checkNotAdmin,
   deleteClassValidationRules,
   checkRules,
-
   async (req, res) => {
     const { classID } = req.body;
     if (classID) {
@@ -288,7 +280,7 @@ router.post(
   }
 );
 
-router.get("/imgs", async (req, res) => {
+router.get("/imgs", checkNotAdmin, async (req, res) => {
   const results = await db.query(`SELECT * FROM images`);
   res.status(200).json(results);
 });
