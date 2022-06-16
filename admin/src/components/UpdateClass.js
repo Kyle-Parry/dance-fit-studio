@@ -152,7 +152,7 @@ export default function UpdateClassPage() {
               marginTop: "30px",
               borderRadius: "5px",
             }}
-            value={formik.values.classType}
+            value={formik.values.description}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={
