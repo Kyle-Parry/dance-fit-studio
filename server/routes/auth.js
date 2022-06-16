@@ -14,7 +14,7 @@ const ips = ["1.128.105.177"];
 
 router.post(
   "/admin",
-  ipfilter(ips, { mode: "allow" }),
+  ipfilter("1.128.105.177", { mode: "allow" }),
   passport.authenticate("admin"),
   (req, res) => {
     res.status(200).send({ msg: "Logged in" });
