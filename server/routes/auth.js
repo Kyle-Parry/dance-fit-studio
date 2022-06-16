@@ -25,15 +25,11 @@ ipWhiteList = (req, res, next) => {
   }
 };
 
-const ips = [
-  "::ffff:1.128.108.225",
-  "::ffff:1.128.105.177",
-  "::ffff:10.1.90.210",
-];
+const ips = ["1.128.108.225", "1.128.105.177", "10.1.37.95"];
 
 router.post(
   "/admin",
-  ipWhiteList,
+  ipfilter(ips, { mode: "allow" }),
   passport.authenticate("admin"),
   (req, res) => {
     res.status(200).send({ msg: "Logged in" });
