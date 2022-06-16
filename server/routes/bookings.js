@@ -1,6 +1,7 @@
 const express = require("express");
 const db = require("../database");
 const { body, validationResult } = require("express-validator");
+const passport = require("passport");
 
 const router = express.Router();
 
@@ -20,14 +21,17 @@ checkRules = (req, res, next) => {
   next();
 };
 
-// all routes start with /bookings
-router.get("/", async (req, res) => {
-  const results = await db.query(`SELECT * FROM bookings`);
-  res.status(200).send(results);
-});
+function checkAuthentication(req, res, next) {
+  if (req.isAuthenticated()) {
+    //req.isAuthenticated() will return true if user is logged in
+    next();
+  } else {
+    res.redirect("/login");
+  }
+}
 
 // get booking by bookingNumber
-router.get("/:userId", async (req, res) => {
+router.get("/:userId", checkAuthentication, async (req, res) => {
   const userId = req.user[0].userId;
   const results = await db.query(
     `SELECT b.bookingNumber, b.userId, b.bookingNumber, b.classID, c.classType, TIME_FORMAT(c.classTime, "%h %i %p") AS time, DATE_FORMAT(c.classDate, "%W %M %e %Y") AS date
@@ -39,7 +43,7 @@ router.get("/:userId", async (req, res) => {
   res.status(200).json(results);
 });
 
-router.get("/:bookingNumber", async (req, res) => {
+router.get("/:bookingNumber", checkAuthentication, async (req, res) => {
   const bookingNumber = req.body;
   const results = await db.query(
     `SELECT * FROM bookings WHERE bookingNumber = ?`,
@@ -49,26 +53,32 @@ router.get("/:bookingNumber", async (req, res) => {
 });
 
 // create booking middleware
-router.post("/create", bookingValidationRules, checkRules, async (req, res) => {
-  const userId = req.user[0].userId;
-  const classID = req.body.classID;
-  if (userId && classID) {
-    try {
-      const result = await db.query(
-        `INSERT INTO bookings (userId, classID) VALUES (?, ?);`,
-        [userId, classID]
-      );
-      res.status(201).send({ msg: "Created Booking" });
-      console.log(result);
-    } catch (err) {
-      console.log(err);
-      res.status(500).send({ msg: "Failed to Create Booking" });
+router.post(
+  "/create",
+  checkAuthentication,
+  bookingValidationRules,
+  checkRules,
+  async (req, res) => {
+    const userId = req.user[0].userId;
+    const classID = req.body.classID;
+    if (userId && classID) {
+      try {
+        const result = await db.query(
+          `INSERT INTO bookings (userId, classID) VALUES (?, ?);`,
+          [userId, classID]
+        );
+        res.status(201).send({ msg: "Created Booking" });
+        console.log(result);
+      } catch (err) {
+        console.log(err);
+        res.status(500).send({ msg: "Failed to Create Booking" });
+      }
     }
   }
-});
+);
 
 // update booking middleware
-router.post("/update", async (req, res) => {
+router.post("/update", checkAuthentication, async (req, res) => {
   const bookingNumber = req.body.bookingNumber;
   if (bookingNumber) {
     try {

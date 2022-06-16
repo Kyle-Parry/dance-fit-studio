@@ -2,6 +2,7 @@ const express = require("express");
 const db = require("../database");
 const bcrypt = require("bcrypt");
 const { body, validationResult } = require("express-validator");
+const passport = require("passport");
 
 const router = express.Router();
 
@@ -22,8 +23,17 @@ checkRules = (req, res, next) => {
   next();
 };
 
+function checkAuthentication(req, res, next) {
+  if (req.isAuthenticated()) {
+    //req.isAuthenticated() will return true if user is logged in
+    next();
+  } else {
+    res.redirect("/login");
+  }
+}
+
 // get user by email
-router.get("/:userId", async (req, res) => {
+router.get("/:userId", checkAuthentication, async (req, res) => {
   const userId = req.user[0].userId;
   const results = await db.query(
     `SELECT email, firstName, lastName FROM users WHERE userId = ?`,
@@ -55,49 +65,34 @@ router.post("/create", userValidationRules, checkRules, async (req, res) => {
 });
 
 // update user middleware
-router.post("/update", userValidationRules, checkRules, async (req, res) => {
-  const { email, lastName, firstName, password } = req.body;
-  const userId = req.user[0].userId;
-  const hash = await bcrypt.hashSync(password, 10);
+router.post(
+  "/update",
+  checkAuthentication,
+  userValidationRules,
+  checkRules,
+  async (req, res) => {
+    const { email, lastName, firstName, password } = req.body;
+    const userId = req.user[0].userId;
+    const hash = await bcrypt.hashSync(password, 10);
 
-  if (email && lastName && firstName && hash && userId) {
-    try {
-      const result = await db.query(
-        `UPDATE users SET email = ?, firstName = ?, lastName = ?, password = ? WHERE userId  = ?`,
-        [email, firstName, lastName, hash, userId]
-      );
-      if (result.affectedRows > 0) {
-        res.status(200).send({ msg: "User Updated" });
-        console.log(result);
-      } else {
-        res.status(404).send({ msg: "User Not Found" });
+    if (email && lastName && firstName && hash && userId) {
+      try {
+        const result = await db.query(
+          `UPDATE users SET email = ?, firstName = ?, lastName = ?, password = ? WHERE userId  = ?`,
+          [email, firstName, lastName, hash, userId]
+        );
+        if (result.affectedRows > 0) {
+          res.status(200).send({ msg: "User Updated" });
+          console.log(result);
+        } else {
+          res.status(404).send({ msg: "User Not Found" });
+        }
+      } catch (err) {
+        console.log(err);
+        res.status(500).send({ msg: "Update Failed" });
       }
-    } catch (err) {
-      console.log(err);
-      res.status(500).send({ msg: "Update Failed" });
     }
   }
-});
-
-// delete user middleware
-router.post("/delete", async (req, res) => {
-  const email = req.body;
-  if (email) {
-    try {
-      const result = await db.query(`DELETE FROM users WHERE email = ?`, [
-        email,
-      ]);
-      if (result.affectedRows > 0) {
-        res.status(204).send({ msg: "User Deleted" });
-        console.log(result);
-      } else {
-        res.status(404).send({ msg: "User Not Found" });
-      }
-    } catch (err) {
-      console.log(err);
-      res.status(500).send({ msg: "Delete Failed" });
-    }
-  }
-});
+);
 
 module.exports = router;
