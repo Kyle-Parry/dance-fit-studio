@@ -18,7 +18,7 @@ function postLoginUser() {
       window.location.href = "/";
     })
     .catch((error) => {
-      window.location.href = window.location.href;
+      alert("Incorrect Username or Password");
       console.log("user login failed - " + error);
     });
 }
