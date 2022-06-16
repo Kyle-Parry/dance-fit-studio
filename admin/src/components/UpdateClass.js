@@ -194,7 +194,7 @@ export default function UpdateClassPage() {
               labelId="demo-simple-select-label"
               id="imgID"
               value={formik.values.imgID}
-              onChange={formik.handleChange}
+              onChange={formik.handleChange("imgID")}
               onBlur={formik.handleBlur}
               error={formik.touched.imgID && Boolean(formik.errors.imgID)}
               helperText={formik.touched.imgID && formik.errors.imgID}
