@@ -174,7 +174,7 @@ export default function UpdateClassPage() {
             type="Time"
             id="classTime"
             sx={{ bgcolor: "#fff", marginTop: "30px", borderRadius: "5px" }}
-            value={formik.values.classType}
+            value={formik.values.classTime}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.touched.classTime && Boolean(formik.errors.classTime)}
