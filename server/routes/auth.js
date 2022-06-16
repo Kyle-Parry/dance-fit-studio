@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const passport = require("passport");
 const ipfilter = require("express-ipfilter").IpFilter;
+const AccessControl = require("express-ip-access-control");
 
 const router = Router();
 
@@ -10,26 +11,25 @@ router.post("/login", passport.authenticate("user"), (req, res) => {
 
 // The admin login route will only run with
 // whitelisted IP addresses.
-ipWhiteList = (req, res, next) => {
-  let validIps = ["1.128.108.225", "1.128.105.177"]; // Put your IP whitelist in this array
+var options = {
+  mode: "deny",
+  denys: [],
+  allows: ["1.128.108.225"],
+  forceConnectionAddress: false,
+  log: function (clientIp, access) {
+    console.log(clientIp + (access ? " accessed." : " denied."));
+  },
 
-  if (validIps.includes(req.connection.remoteAddress)) {
-    // IP is ok, so go on
-    console.log("IP ok");
-    next();
-  } else {
-    // Invalid ip
-    console.log("Bad IP: " + req.connection.remoteAddress);
-    const err = new Error("Bad IP: " + req.connection.remoteAddress);
-    next(err);
-  }
+  statusCode: 401,
+  redirectTo: "",
+  message: "Unauthorized",
 };
 
 const ips = ["1.128.108.225", "1.128.105.177", "10.1.37.95"];
 
 router.post(
   "/admin",
-  ipfilter(ips, { mode: "allow" }),
+  AccessControl(options),
   passport.authenticate("admin"),
   (req, res) => {
     res.status(200).send({ msg: "Logged in" });
