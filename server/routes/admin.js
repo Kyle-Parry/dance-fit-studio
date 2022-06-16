@@ -23,13 +23,13 @@ deleteUserValidationRules = [body("userId").notEmpty().trim().escape()];
 createClassValidationRules = [
   body("classType").notEmpty().trim().escape(),
   body("description").notEmpty().trim().escape(),
-  body("classDate").notEmpty().trim().escape(),
+  body("classDate").notEmpty().isDate().trim().escape(),
   body("classTime").trim().escape(),
 ];
 updateClassValidationRules = [
   body("classType").notEmpty().trim().escape(),
   body("description").notEmpty().trim().escape(),
-  body("classDate").notEmpty().trim().escape(),
+  body("classDate").notEmpty().isDate().trim().escape(),
   body("classTime").notEmpty().trim().escape(),
   body("classCancelled").trim().escape(),
 ];
